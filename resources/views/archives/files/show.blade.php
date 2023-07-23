@@ -6,8 +6,8 @@
     <div class="page-header">
         <h1>File Details</h1>
     </div>
-    <div class="container">
-        <div class="row">
+    <div class="m-3 bg-white py-4">
+        <div class="row m-3">
             <div class="col-12 mb-4 text-right">
                 @if($file->type == 'audit_reports'
                     && !empty($file->audit_report)
@@ -29,40 +29,40 @@
                 @include('archives.common.file_dropdown')
             </div>
             <div class="col-6 mb-3">
-                <label>Name</label>
+                <label>Name</label><i class="text-danger"> *</i>
                 <input class="form-control" type="text" readonly value="{{ $file->file_name }}" readonly>
             </div>
             <div class="col-6">
-                <label>Uploaded By</label><br/>
+                <label>Uploaded By</label><i class="text-danger"> *</i><br/>
                 <input class="form-control" type="text" readonly value="{{ $file->user->firstname }} {{ $file->user->surname }}">
             </div>
             @if(!empty($file->directory))
             <div class="col-12 mb-3">
-                <label>Full Path</label>
+                <label>Path</label><i class="text-danger"> *</i>
                 <input class="form-control" type="text" readonly value="{{ $file->directory->fullPath() ?? '' }} > {{ $file->file_name ?? '' }}">
             </div>
             @endif
             <div class="col-6 mb-3">
-                <label>Created</label>
+                <label>Created</label><i class="text-danger"> *</i>
                 <input class="form-control" type="text" readonly value="{{ $file->created_at->format('F d, Y h:i A') }}">
             </div>
             <div class="col-6 mb-3">
-                <label>Updated</label>
+                <label>Updated</label><i class="text-danger"> *</i>
                 <input class="form-control" type="text" readonly value="{{ $file->created_at->format('F d, Y h:i A') }}">
             </div>
             <div class="col-12 mb-3">
-                <label>Description</label>
+                <label>Description</label><i class="text-danger"> *</i>
                 <textarea class="form-control" row="5" readonly>{{ $file->description ?? ''}}</textarea>
             </div>
 
             <div class="col-12 mb-3 mt-3">
                 <h4>File Items</h4>
                 <table class="table table-bordered text-white">
-                    <thead><tr><td>Filename</td><td>Action</td></tr></thead>
+                    <thead class=" text-uppercase text-bolder bg-secondary"><tr><td>Filename</td><td>Action</td></tr></thead>
                     <tbody>
                         @foreach($file->items as $item)
                             <tr>
-                                <td>{{ $item->file_name ?? ''}}</td>
+                                <td class="text-primary">{{ $item->file_name ?? ''}}</td>
                                 <td><a href="{{ route('archives-download-file', $item->id) }}" target="_blank" class="btn btn-success"><i class="fa fa-eye"></i> View</a></td>
                             </tr>
                         @endforeach

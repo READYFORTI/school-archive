@@ -5,6 +5,18 @@
 @section('css-page')
   <link href="{{ asset('css/chatbox.css') }}" rel="stylesheet" />
 @endsection
+
+<style>
+  .user-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+</style>
+
 @section('page')
 <div class="m-3">
   <div class="container-fluid">
@@ -22,45 +34,36 @@
                 </div>
             </div>
             
-            <div class="messaging col-12">
-                <div class="inbox_msg">
-                    <div class="mesgs col-md-12">
-                        <div class="msg_history" style="overflow: auto;height: 50vh;"></div>
-                            <div class="type_msg">
-                                <div class="input_msg_write">
-                                    <style>
-                                        .input-group .form-control {
-                                          border-top-right-radius: 0;
-                                          border-bottom-right-radius: 0;
-                                        }
+                <div class="messaging col-12">
+                  <div class="inbox_msg">
+                      <div class="mesgs col-md-12">
+                          <div class="msg_history" style="overflow: auto;height: 50vh;"></div>
+                              <div class="type_msg"> <br>
+                                  <div class="input_msg_write">
+                                    
                                       
-                                        .input-group-append .btn {
-                                          border-top-left-radius: 0;
-                                          border-bottom-left-radius: 0;
-                                        }
+                                    <form id="chat_form" action="{{ route('messages.send') }}" method="POST" class="text-right">
+                                      @csrf
                                       
-                                        .gap {
-                                          margin-left: 10px;
-                                        }
-                                      </style>
-                                      
-                                      <form id="chat_form" action="{{ route('messages.send') }}" method="POST" class="text-right">
-                                        @csrf
-                                        <div class="input-group">
-                                          <textarea class="form-control" name="message" placeholder="Type your message..." rows="1"></textarea>
-                                          <div class="input-group-append">
-                                            <button class="btn btn-primary gap" type="submit"><i class="fas fa-paper-plane"></i></button>
-                                          </div>
-                                        </div><br>
-                                      </form>
-                                      
-                                      
-                                      
-                                      
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                      <div class="input-group">
+                                        <div class="input-group-prepend">
+                                          <span class="input-group-text bg-success border-0 rounded-circle text-white user-icon">
+                                            <i class="fas fa-user fa-lg"></i>
+                                          </span>
+                                        </div>
+                                        <textarea class="form-control border-0 rounded-0" name="message" placeholder="Type your message..." rows="2" style="border: none; box-shadow: none;"></textarea>
+                                        <div class="input-group-append">
+                                          <button class="btn btn-success" type="submit">
+                                            <i class="fas fa-paper-plane fa-lg"></i>
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </form>
+                                    
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
                 </div>
             </div>
 
