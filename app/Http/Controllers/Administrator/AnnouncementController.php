@@ -30,7 +30,7 @@ class AnnouncementController extends Controller
         ]);
         
         $users = User::whereHas('role', function($q){ $q->where('role_name', '!=', 'Quality Assurance Director');})->get();
-        \Notification::notify($users, 'post an announcement', route('dashboard'));
+        \Notification::notify($users, 'post an announcement', route('user.dashboard'));
 
         return redirect()->back()->with('message', 'You have successfully created announcement');
     }

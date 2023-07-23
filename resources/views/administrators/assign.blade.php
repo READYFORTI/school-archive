@@ -38,7 +38,7 @@
             <div class="col-8 px-3">
                 @php $roles = ['Document Control Custodian', 'Process Owner'] @endphp
                 @foreach($roles as $role)
-                    <button type="button" class="btn btn-design btn-role me-2 {{ $loop->index == 0 ? 'active' : ''}}" data-role="{{ $role }}"><span class="mdi mdi-domain"></span> {{ $role }}</button>
+                    <button type="button" class="btn btn-design btn-role me-2 {{ (!empty(session('role')) && session('role') == $role) || (empty(session('role')) && $loop->index == 0) ? 'active' : ''}}" data-role="{{ $role }}"><span class="mdi mdi-domain"></span> {{ $role }}</button>
                 @endforeach
             </div>
         </div>
@@ -207,7 +207,8 @@
                 });
             }
 
-            displayUser('Document Control Custodian');
+            
+            displayUser("{{ session('role') ?? 'Document Control Custodian' }}");
             $('.btn-role').on('click', function(){
                 $('.btn-role').removeClass('active');
                 $(this).addClass('active');

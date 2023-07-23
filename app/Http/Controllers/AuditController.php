@@ -157,7 +157,7 @@ class AuditController extends Controller
                     ]);
 
                     $user = User::find($auditor);
-                    \Notification::notify($user, 'Assigned you to audit plan '.$request->name, route('dashboard'));
+                    \Notification::notify($user, 'Assigned you to audit plan '.$request->name, route('user.dashboard'));
                 }
             }
         });
