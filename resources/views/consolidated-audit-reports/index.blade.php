@@ -24,7 +24,7 @@
                             </a>
                         </div>
                         <ul class="dropdown-menu text-center">
-                            <li><a href="{{ route('archives-download-file', $report->file_id) }}" target="_blank" class="text-decoration-none"><i class="fa fa-download"></i> Download</a></li>
+                            <li><a href="{{ route('archives-show-file', $report->file_id) }}" target="_blank" class="text-decoration-none"><i class="fa fa-eye"></i> Open</a></li>
                             <li><a href="#" class="text-decoration-none btn-property"
                                 data-bs-toggle="modal" data-bs-target="#propertyModal"
                                 data-name="{{ $report->name }}"
