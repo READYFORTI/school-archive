@@ -97,6 +97,15 @@ class AreaSeeder extends Seeder
                 'parent_area' => $parent_id,
                 'type' => $area_type
             ]);
+
+            if(in_array($area_type, ['program', 'office'])) {
+                Area::create([
+                    'area_name' => $area_name. ' Process',
+                    'area_description' => ucwords($area_name. ' Process'),
+                    'parent_area' => $area->id,
+                    'type' => 'process'
+                ]);
+            }
         }
 
         if(!empty($data['children'])) {
