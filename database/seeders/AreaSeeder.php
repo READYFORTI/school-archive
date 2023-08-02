@@ -100,6 +100,13 @@ class AreaSeeder extends Seeder
 
             if(in_array($area_type, ['program', 'office'])) {
                 Area::create([
+                    'area_name' => 'Process 1',
+                    'area_description' => ucwords('Process 1'),
+                    'parent_area' => $area->id,
+                    'type' => 'process'
+                ]);
+                
+                Area::create([
                     'area_name' => $area_name. ' Process',
                     'area_description' => ucwords($area_name. ' Process'),
                     'parent_area' => $area->id,
