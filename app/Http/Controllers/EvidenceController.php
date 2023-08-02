@@ -82,9 +82,9 @@ class EvidenceController extends Controller
             'file_id' => $file_id
         ]);
 
-        $users = User::whereHas('role', function($q){ $q->whereIn('role_name', \FileRoles::EVIDENCES); })->get();
+        $users = User::whereHas('role', function($q){ $q->where('role_name', \Roles::INTERNAL_AUDITOR); })->get();
         foreach($users as $user) {
-            if($this->dr->allowedDirectory($directory, $user)) {
+            if($this->dr->allowedDirectoryForNotifications($directory, $user)) {
                 \Notification::notify([$user], 'Submitted Evidence', route('archives-show-file', $file_id));
             }
         }

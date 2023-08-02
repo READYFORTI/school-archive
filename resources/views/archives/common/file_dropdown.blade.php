@@ -13,7 +13,26 @@
                 Uploaded By: {{ $file->user->username }}<br/>
                 Uploaded At: {{ $file->created_at->format('F d, Y h:i A') }}
             </div>
-            <div class="tracking-container">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <td>User Type</td>
+                        <td>Name</td>
+                        <td>Date</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($file->trackings() as $track)
+                        <tr class="">
+                            <td><i class="fa fa-user"></i> {{ $track['name'] ?? '' }}</td>
+                            <td>{{ !empty($track['user']) ? "By: ". $track['user'] : '  ' }}</td>
+                            <td>{{ !empty($track['date']) ? "Date: ".$track['date'] : '  ' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            <!-- <div class="tracking-container">
                 @foreach($file->trackings() as $track)
                     <div class="tracking-item">
                         <span><strong>{{ $track['name'] ?? '' }}</strong></span><br/>
@@ -24,7 +43,7 @@
                         <small>&nbsp;{{ !empty($track['date']) ? "Date: ".$track['date'] : ' ' }}</small>
                     </div>
                 @endforeach
-            </div>
+            </div> -->
         </div>
     </li>
     @endif

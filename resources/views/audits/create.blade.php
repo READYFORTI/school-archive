@@ -40,7 +40,7 @@
         
                             <div class="mt-4">
                                 <h4>Process and Auditors</h4>
-                                <button class="btn btn-success float-end" type="button" data-bs-toggle="modal" data-bs-target="#addProcessModal"><i class="fa fa-plus"></i> Add Process</button><br><br>
+                                <button class="btn btn-success float-end btn-process-modal" type="button" data-bs-toggle="modal" data-bs-target="#addProcessModal"><i class="fa fa-plus"></i> Add Process</button><br><br>
                                 <table class="table text-black table-process mt-3">
                                     <thead>
                                         <tr>
@@ -54,7 +54,7 @@
                             </div>
         
                             <div class="text-end mt-4">
-                                <button type="submit" class="btn btn-success btn-save"><i class="fa fa-save"></i> Save</button>
+                                <button type="submit" class="btn btn-success btn-save px-4 py-2"><i class="fa fa-save"></i> Save Audit Plan</button>
                             </div>
                         </div>
                     </form>
@@ -146,11 +146,24 @@
         multiSelect: true,
         collapseIcon: "fa fa-minus",
         expandIcon: "fa fa-plus",
-        // onNodeSelected: function(event, data) {
-        //     $('.process').val(data.id);
-        //     $('.process_name').val(data.text);
-        // }
+        onNodeSelected: function(event, data) {
+            var processName = data.text;
+            var unselectedNodes = tree.treeview('getUnselected');
+            unselectedNodes.forEach(element => {
+                if(processName == element.text) {
+                    tree.treeview('selectNode', [ element.nodeId, { silent: true } ]);
+                }
+            });
+        }
     });
+
+    $('.btn-process-modal').on('click', function(){
+        var selectedNodes = tree.treeview('getSelected');
+        selectedNodes.forEach(element => {
+            tree.treeview('unselectNode', [ element.nodeId, { silent: true } ]);
+        });
+    });
+    
 
     tree.treeview('expandAll', { levels: 1});
 
@@ -195,8 +208,9 @@
         var selected = tree.treeview('getSelected');
         var selectedAreas = [];
         selected.forEach(function(area){
+            var parent = tree.treeview('getNode', area.parentId);
             $('.table-process tbody').append(`<tr>
-                    <td>` + area.text + `</td>
+                    <td>` + parent.text + ` > ` + area.text + `</td>
                     <td>` + auditors_name + `</td>
                     <td>
                         <button class="btn btn-danger btn-remove" type="button"><i class="fa fa-times"></i></button>

@@ -19,8 +19,8 @@
                             <a href="#" class="btn btn-sm btn-success btn-confirm" data-message="Are you sure you want to approve?" data-target="#approve_report_{{ $report->id }}">Approve</button>
                                 <form id="approve_report_{{ $report->id }}" action="{{ route(auth()->user()->role->role_name == 'College Management Team' ? 'cmt.survey-reports.approve' : 'admin-survey-reports.approve', $report->id) }}" class="d-none" method="POST">@csrf</form>
                             </a>
-                            <a href="#" class="btn btn-sm btn-warning btn-confirm" data-message="Are you sure you want to reject?" data-target="#approve_report_{{ $report->id }}">Reject</button>
-                                <form id="approve_report_{{ $report->id }}" action="{{ route(auth()->user()->role->role_name == 'College Management Team' ? 'cmt.survey-reports.reject' : 'admin-survey-reports.reject', $report->id) }}" class="d-none" method="POST">@csrf</form>
+                            <a href="#" class="btn btn-sm btn-warning btn-confirm" data-message="Are you sure you want to reject?" data-target="#reject_report_{{ $report->id }}">Reject</button>
+                                <form id="reject_report_{{ $report->id }}" action="{{ route(auth()->user()->role->role_name == 'College Management Team' ? 'cmt.survey-reports.reject' : 'admin-survey-reports.reject', $report->id) }}" class="d-none" method="POST">@csrf</form>
                             </a>
                         </div>
                         <ul class="dropdown-menu text-center">

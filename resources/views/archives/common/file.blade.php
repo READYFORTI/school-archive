@@ -14,7 +14,10 @@
 
     @if(in_array($file->type, ['evidences', 'templates', 'manuals', 'audit_reports', 'consolidated_audit_reports', 'survey_reports']))
         <button class="btn btn-remarks
-            {{ !empty($file->remarks) ? 'btn-success' : 'btn-secondary' }}" data-bs-toggle="modal" data-bs-target="#remarksModal"
+            {{ !empty($file->remarks) ? 'btn-success' : 'btn-secondary' }}
+            {{ $file->type == 'survey_reports' && $file->survey_report->status == 'rejected' ? 'btn-danger' : '' }}
+            {{ $file->type == 'consolidated_audit_reports' && $file->cons_audit_report->status == 'rejected' ? 'btn-danger' : '' }}
+            " data-bs-toggle="modal" data-bs-target="#remarksModal"
             data-file-id="{{ $file->id }}"
             {{ (in_array(Auth::user()->role->role_name, ['Internal Auditor', 'Internal Lead Auditor', 'Staff', 'Document Control Custodian', 'College Management Team', 'Quality Assurance Director']))
             ? 'data-route='.route('save-remarks', $file->id) : '' }}>

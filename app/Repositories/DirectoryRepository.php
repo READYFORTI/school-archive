@@ -172,6 +172,39 @@ class DirectoryRepository {
 
         return $allowed;
     }
+
+
+    public function allowedDirectoryForNotifications($directory, $current_user)
+    {
+        $allowed = true;
+        $route = Route::getFacadeRoot()->current()->uri() ?? '';
+        if(
+            in_array($current_user->role->role_name, config('app.role_with_assigned_area'))
+            || $current_user->role->role_name == 'Internal Auditor'
+        ) {
+            $assigned_areas = $current_user->assigned_areas->pluck('id')->toArray();
+            if(!in_array($directory->area_id, $assigned_areas)) {
+                $allowed = false;
+                // Check from each child
+                $this->getDirectoryChildBranches($directory, $assigned_areas, $allowed);
+
+                if(!$allowed) {
+                    $root_directories = $this->getRootDirectories($directory);
+                    
+                    foreach($root_directories as $root) {
+                        if(in_array($root['area_id'], $assigned_areas)) {
+                            $allowed = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        
+
+        return $allowed;
+    }
     
     public function getDirectoryChildBranches($directory, $assigned_areas = null, &$is_allowed = null)
     {

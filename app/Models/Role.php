@@ -23,7 +23,7 @@ class Role extends Model
         }elseif(in_array($this->role_name, ['Process Owner', 'Document Control Custodian'])) {
             $directories = ['Manuals', 'Evidences'];
         }elseif(in_array($this->role_name, ['Internal Auditor'])) {
-            $directories = ['Audit Reports', 'Evidences'];
+            $directories = ['Audit Reports'];
         }elseif(in_array($this->role_name, ['Internal Lead Auditor'])) {
             $directories = ['Audit Reports', 'Evidences', 'Consolidated Audit Reports'];
         }elseif($this->role_name == 'Quality Assurance Director') {
