@@ -335,7 +335,7 @@ class DirectoryRepository {
         return $directory;
     }
 
-    public function getDirectoriesAssignedByGrandParent($grand_parent_name)
+    public function getDirectoriesAssignedByGrandParent($grand_parent_name, $parent = true)
     {
         if(in_array(Auth::user()->role->role_name, config('app.role_with_assigned_area'))) {
             $directories = Directory::whereIn('area_id', Auth::user()->assigned_areas->pluck('id'))->get();
@@ -353,6 +353,9 @@ class DirectoryRepository {
             $directory->grand_parent = $this->getGrandParent($directory);
         }
         $directories = $directories->where('grand_parent', $grand_parent_name);
+        if(!$parent) {
+            return $directories;
+        }
         return Directory::whereIn('parent_id', $directories->pluck('id'))->get();
     }
 

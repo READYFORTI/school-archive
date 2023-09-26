@@ -25,6 +25,12 @@
     {{-- <div class="container"> --}}
     <div class="m-3">
         <div style="text-align:right">
+            @if(Auth::user()->role->role_name == Roles::PROCESS_OWNER 
+                && $page_title = 'Manuals' 
+                && !empty($current_directory->area) && $current_directory->area->type == 'process'
+            )   
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#manualsModal"><i class="fa fa-book"></i> Upload Manual</button>
+            @endif
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fa fa-search"></i> Search</button>
             @if(
                     (Auth::user()->role->role_name == Roles::DOCUMENT_CONTROL_CUSTODIAN
@@ -132,7 +138,7 @@
                             <input type="text" class="form-control" name="file_name" id="file_name" placeholder="Enter File" required>
                         </div>
                         <div class="mb-3">
-                            <label for="file_attachments" class="form-label">Attachment</label>
+                            <label for="file_attachments" class="form-label">Attachments</label>
                             <input type="file" class="form-control" name="file_attachments[]" id="file_attachments" 
                                 required multiple accept="image/jpeg,image/png,application/pdf,application/vnd.oasis.opendocument.text,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                         </div>
@@ -208,6 +214,47 @@
                     <form method="POST" action="{{ route('staff.template.store') }}" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" id="current_directory" name="current_directory" value="{{ $current_directory->id ?? '' }}">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Enter Filename" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Date:</label>
+                                <input type="date" id="date" class="form-control" name="date" max="{{ date('Y-m-d') }}"/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="file_attachments" class="form-label">Attachment</label>
+                                <input type="file" class="form-control" 
+                                    name="file_attachments[]" id="file_attachments" 
+                                    required multiple accept="image/jpeg,image/png,application/pdf,application/vnd.oasis.opendocument.text,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                            </div>
+                            <div class="mb-3">
+                                <label for="search" class="form-label">Description:</label>
+                                <textarea name="description" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Save changes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if(Auth::user()->role->role_name == Roles::PROCESS_OWNER && $page_title == 'Manuals')
+        <div class="modal fade" id="manualsModal" tabindex="-1" aria-labelledby="manualsModalModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualsModalModalLabel">Upload Manuals</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST" action="{{ route('po.manual.store') }}" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" id="current_directory" name="directory" value="{{ $current_directory->id ?? '' }}">
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
