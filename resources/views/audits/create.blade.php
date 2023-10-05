@@ -1,3 +1,12 @@
+</div><!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Include necessary Bootstrap CSS and other dependencies -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  
+</head>
+
+<body>
 @extends('layout.sidebar')
 @section('title')
 <title>Add Audit Plan</title>
@@ -7,49 +16,87 @@
     <div class="page-header">
         <h2>Add Audit Plan</h2>
     </div>
-    <div class="container">
-        <div class="row mt-3 px-2 pb-3">
-            @include('layout.alert')
-            <div class="col-8">
-                <form id="auditPlanForm" method="POST" action="{{ route('lead-auditor.audit.save') }}">
-                    @csrf
-                    <div>
-                        <div class="mb-3">
-                            <label for="audit_plan_name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="audit_plan_name" name="name" placeholder="Enter name" required>
+    <div class="container-fluid ">
+    <div class="row">
+        <div class="col-lg-9 p-3">
+            <div class="m-3 bg-white py-2">
+                <div class="px-3 py-2">
+                    @include('layout.alert')
+                    <form id="auditPlanForm" method="POST" action="{{ route('lead-auditor.audit.save') }}">
+                        @csrf
+                        <div>
+                            <div class="mb-3">
+                                <label for="audit_plan_name" class="form-label">Name</label><i class="text-danger"> *</i>
+                                <input type="text" class="form-control shadow-none" id="audit_plan_name" name="name" placeholder="Enter name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="audit_plan_description" class="form-label">Description</label><i class="text-danger"> *</i>
+                                <textarea class="form-control shadow-none" rows="3" id="audit_plan_description" name="description" placeholder="Enter description" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="audit_plan_date" class="form-label">Date</label><i class="text-danger"> *</i>
+                                <input type="date" class="form-control date shadow-none" id="audit_plan_date" name="date" placeholder="Enter date" required>
+                            </div><br>
+        
+                            <div class="mt-4">
+                                <h4>Process and Auditors</h4>
+                                <button class="btn btn-success float-end btn-process-modal" type="button" data-bs-toggle="modal" data-bs-target="#addProcessModal"><i class="fa fa-plus"></i> Add Process</button><br><br>
+                                <table class="table text-black table-process mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>PROCESS</th>
+                                            <th>AUDITORS</th>
+                                            <th><i class="fas fa-cogs"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+        
+                            <div class="text-end mt-4">
+                                <button type="submit" class="btn btn-success btn-save px-4 py-2"><i class="fa fa-save"></i> Save Audit Plan</button>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="audit_plan_description" class="form-label">Description</label>
-                            <textarea class="form-control" rows="3" id="audit_plan_description" name="description" placeholder="Enter description" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="audit_plan_date" class="form-label">Date</label>
-                            <input type="date" class="form-control date" id="audit_plan_date" name="date" placeholder="Enter date" required>
-                        </div>
-
-                        <div class="mt-2">
-                            <h3>Process and Auditors</h3>
-                            <button class="btn btn-success" style="float:right" type="button" data-bs-toggle="modal" data-bs-target="#addProcessModal"><i class="fa fa-plus"></i> Add Process</button>
-                            <table class="table text-white table-process">
-                                <thead><tr><td>Process</td><td>Auditors</td><td>-</td></tr></thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div style="text-align: right" class="pb-5 mt-5">
-                        <button type="submit" class="btn btn-success btn-save px-3 py-2">Save Audit Plan</button>
-                    </div>
-                </form>
-            </div>
-            <div class="col-4 mt-2 alert alert-success">
-                <h3 class="mb-2">Internal Auditors</h3>
-                @foreach($auditors as $user)
-                    <h4 class="mb-0">{{ sprintf("%s %s", $user->firstname ?? '', $user->surname ?? '') }}</h4>
-                    <p class="mb-2 mt-0"><small>Assigned on: {{ sprintf("%s > %s", $user->assigned_area->parent->area_name ?? '', $user->assigned_area->area_name ?? 'None') }}</small></p>
-                @endforeach
+                    </form>
+                </div>
             </div>
         </div>
+        
+    
+        <div class="col-lg-3 p-3">
+            <div class="m-3 bg-white py-2">
+                <button class="btn btn text-success" type="button" data-toggle="collapse" data-target="#internal-auditors" aria-expanded="true" aria-controls="internal-auditors" style="border: none; box-shadow: none;">
+                  <i class="fas fa-bars"></i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;INTERNAL AUDITORS
+                </button>
+    
+                <div class="collapse show m-3" id="internal-auditors" style="flex-direction: row-reverse;">
+                  @if(auth()->user()->role->role_name == 'Internal Lead Auditor')
+                  <div class="card bg-light border-0">
+                    <div class="card-body p-3">
+                      @foreach($auditors as $user)
+                      <div class="media align-items-center mb-4">
+                        <img src="{{ Storage::url($user->img) }}" alt="Avatar" class="rounded-circle mr-3" alt="Profile Image" width="50">
+                        
+                        <div class="media-body">
+                          <h6 class="mt-0 text-primary">{{ sprintf("%s %s", $user->firstname ?? '', $user->surname ?? '') }}</h6>
+                          <p class="mb-0 text-success small">Assigned on:</p>
+                          <ul class="list-unstyled mb-0 text-muted small">
+                            @foreach($user->getAssignedAreas() as $assignedArea)
+                            <li class="mb-1">{{ $assignedArea }}</li>
+                            @endforeach
+                          </ul>
+                        </div>
+                      </div>
+                      @endforeach
+                    </div>
+                  </div>
+                  @endif
+                </div>
+                
+            </div>
+          </div>
     </div>
+    
 
 
     <div class="modal fade" id="addProcessModal" tabindex="-1" aria-labelledby="addProcessModalLabel" aria-hidden="true">
@@ -60,7 +107,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                     <div class="modal-body">
-                        <div class="mb-3">
+                        <div class="mb-3 text-black">
                             <label for="name" class="form-label">Select Process</label>
                             <div class="tree"></div>
                         </div>
@@ -80,6 +127,12 @@
             </div>
         </div>
     </div>
+</div>
+
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    </body>
+    </html>
 @endsection
 
 @section('js')
@@ -93,11 +146,24 @@
         multiSelect: true,
         collapseIcon: "fa fa-minus",
         expandIcon: "fa fa-plus",
-        // onNodeSelected: function(event, data) {
-        //     $('.process').val(data.id);
-        //     $('.process_name').val(data.text);
-        // }
+        onNodeSelected: function(event, data) {
+            var processName = data.text;
+            var unselectedNodes = tree.treeview('getUnselected');
+            unselectedNodes.forEach(element => {
+                if(processName == element.text) {
+                    tree.treeview('selectNode', [ element.nodeId, { silent: true } ]);
+                }
+            });
+        }
     });
+
+    $('.btn-process-modal').on('click', function(){
+        var selectedNodes = tree.treeview('getSelected');
+        selectedNodes.forEach(element => {
+            tree.treeview('unselectNode', [ element.nodeId, { silent: true } ]);
+        });
+    });
+    
 
     tree.treeview('expandAll', { levels: 1});
 
@@ -142,8 +208,9 @@
         var selected = tree.treeview('getSelected');
         var selectedAreas = [];
         selected.forEach(function(area){
+            var parent = tree.treeview('getNode', area.parentId);
             $('.table-process tbody').append(`<tr>
-                    <td>` + area.text + `</td>
+                    <td>` + parent.text + ` > ` + area.text + `</td>
                     <td>` + auditors_name + `</td>
                     <td>
                         <button class="btn btn-danger btn-remove" type="button"><i class="fa fa-times"></i></button>

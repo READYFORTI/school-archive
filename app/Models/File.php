@@ -32,6 +32,16 @@ class File extends Model
         return $this->hasMany(FileUser::class);
     }
 
+    public function survey_report()
+    {
+        return $this->hasOne(SurveyReport::class);
+    }
+
+    public function cons_audit_report()
+    {
+        return $this->hasOne(ConsolidatedAuditReport::class);
+    }
+
     public function histories()
     {
         return $this->hasMany(FileHistory::class)->orderBy('created_at', 'DESC');

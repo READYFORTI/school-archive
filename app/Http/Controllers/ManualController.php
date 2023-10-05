@@ -39,6 +39,7 @@ class ManualController extends Controller
         $directories = [];
         if(Auth::user()->role->role_name == 'Process Owner') {
             $directories = $this->dr->getDirectoriesAssignedByGrandParent($this->parent);
+            dd($directories);
         }
         return view('manuals.create', compact('directories'));
     }
@@ -46,9 +47,8 @@ class ManualController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-
         if(Auth::user()->role->role_name == 'Process Owner') {
-            $directories = $this->dr->getDirectoriesAssignedByGrandParent($this->parent);
+            $directories = $this->dr->getDirectoriesAssignedByGrandParent($this->parent, false);
             $directory = $directories->where('id', $request->directory)->firstOrFail();
         }else{
             $parent_directory = Directory::where('name', $this->parent)->whereNull('parent_id')->firstOrFail();
@@ -83,7 +83,7 @@ class ManualController extends Controller
         $users = User::whereHas('role', function($q){ $q->whereIn('role_name', \FileRoles::MANUALS); })->get();
         foreach($users as $user) {
             if($this->dr->allowedDirectory($directory, $user)) {
-                \Notification::notify([$user], 'Submitted Manuals', route('archives-show-file', $file_id));
+                \Notification::notify([$user], 'Submitted Process Manuals', route('archives-show-file', $file_id));
             }
         }
 

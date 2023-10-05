@@ -99,9 +99,11 @@ class ArchiveController extends Controller
     {
         $keyword = $request->keyword;
         $parent_name = $parent_name == 'archives' ? null : $parent_name;
+        
         $date_from = $request->date_from;
         $date_to = $request->date_to;
         $data = $this->dr->searchFilesAndDirectories($keyword, ucwords($parent_name), $date_from, $date_to);
+        $data['route'] = strtolower($parent_name ?? 'archives');
         $data['date_from'] = $date_from;
         $data['date_to'] = $date_to;
         $data['page_title'] = $parent_name ?? 'archives';

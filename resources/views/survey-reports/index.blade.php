@@ -19,12 +19,12 @@
                             <a href="#" class="btn btn-sm btn-success btn-confirm" data-message="Are you sure you want to approve?" data-target="#approve_report_{{ $report->id }}">Approve</button>
                                 <form id="approve_report_{{ $report->id }}" action="{{ route(auth()->user()->role->role_name == 'College Management Team' ? 'cmt.survey-reports.approve' : 'admin-survey-reports.approve', $report->id) }}" class="d-none" method="POST">@csrf</form>
                             </a>
-                            <a href="#" class="btn btn-sm btn-warning btn-confirm" data-message="Are you sure you want to reject?" data-target="#approve_report_{{ $report->id }}">Reject</button>
-                                <form id="approve_report_{{ $report->id }}" action="{{ route(auth()->user()->role->role_name == 'College Management Team' ? 'cmt.survey-reports.reject' : 'admin-survey-reports.reject', $report->id) }}" class="d-none" method="POST">@csrf</form>
+                            <a href="#" class="btn btn-sm btn-warning btn-confirm" data-message="Are you sure you want to reject?" data-target="#reject_report_{{ $report->id }}">Reject</button>
+                                <form id="reject_report_{{ $report->id }}" action="{{ route(auth()->user()->role->role_name == 'College Management Team' ? 'cmt.survey-reports.reject' : 'admin-survey-reports.reject', $report->id) }}" class="d-none" method="POST">@csrf</form>
                             </a>
                         </div>
                         <ul class="dropdown-menu text-center">
-                            <li><a href="{{ route('archives-download-file', $report->file_id) }}" target="_blank" class="text-decoration-none"><i class="fa fa-download"></i> Download</a></li>
+                            <li><a href="{{ route('archives-show-file', $report->file_id) }}" target="_blank" class="text-decoration-none"><i class="fa fa-eye"></i> Open</a></li>
                             <li><a href="#" class="text-decoration-none btn-property"
                                 data-bs-toggle="modal" data-bs-target="#propertyModal"
                                 data-name="{{ $report->name }}"
@@ -84,15 +84,35 @@
                     <h5 class="modal-title">Remarks</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="col-12">
-                        <label class="form-label" for="comments">Recent Remarks:</label>
-                        <table class="table recent-remarks-table"></table>
+                <form method="POST" action="" id="remarksForm">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="remarksDetailForm">
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Choose Remarks:</label><br/>
+                                    <input type="radio" class="btn-check" name="type" id="remarks-success" value="success" autocomplete="off" checked>
+                                    <label class="btn btn-outline-success p-2 px-4" for="remarks-success"></label>
+
+                                    <input type="radio" class="btn-check" name="type" id="remarks-danger" value="danger" autocomplete="off">
+                                    <label class="btn btn-outline-danger p-2 px-4" for="remarks-danger"></label>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label" for="comments">Comments:</label>
+                                    <textarea class="form-control" rows="3" name="comments" id="remarks-comments"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="comments">Recent Remarks:</label>
+                                <table class="table recent-remarks-table"></table>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success btn-submit-remarks">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
