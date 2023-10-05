@@ -145,7 +145,7 @@ class DirectoryRepository {
                         });
                 });
             }
-        })->get();
+        })->where('type', '!=', 'manual-updates')->get();
 
         return $files;
     }

@@ -220,26 +220,58 @@ class ArchiveController extends Controller
         $file = File::where('user_id', $user->id)
                     ->where('id', $file_id)
                     ->firstOrFail();
+        if($file->type !== 'manuals') {
+            $fileHistory = FileHistory::create([
+                'file_id' => $file->id,
+                'file_name' => $file->file_name,
+                'description' => $file->description,
+            ]);
+                        
+            $file->file_name = $request->file_name;
+            $file->description = $request->file_description;
+            $file->save();
 
-        $fileHistory = FileHistory::create([
-            'file_id' => $file->id,
-            'file_name' => $file->file_name,
-            'description' => $file->description,
-        ]);
-                    
-        $file->file_name = $request->file_name;
-        $file->description = $request->file_description;
-        $file->save();
+            if ($request->hasFile('file_attachments')) {
+                FileItem::where('file_id', $file->id)
+                            ->whereNull('file_history_id')
+                            ->update(['file_history_id' => $fileHistory->id]);
 
-        if ($request->hasFile('file_attachments')) {
-            FileItem::where('file_id', $file->id)
-                        ->whereNull('file_history_id')
-                        ->update(['file_history_id' => $fileHistory->id]);
+                $this->dr->storeFileItem($file, $request->file('file_attachments'));            
+            }
+            
 
-            $this->dr->storeFileItem($file, $request->file('file_attachments'));            
+            return back()->withMessage('File updated successfully');
+        }else{
+            $parent_manual = Manual::where('file_id', $file->id)->firstOrFail();
+            $file_id = null;
+            if ($request->hasFile('file_attachments')) {
+                $new_file = $this->dr->storeFile(
+                            $request->file_name, 
+                            $request->file_description, 
+                            $request->file('file_attachments'), 
+                            $file->directory_id,
+                            'manual-updates'
+                );
+                $file_id = $new_file->id;
+            }
+            Manual::create([
+                'parent_manual_id' => $parent_manual->id,
+                'name' => $request->file_name,
+                'description' => $request->file_description,
+                'user_id' => $user->id,
+                'directory_id' => $file->directory_id,
+                'date' => $parent_manual->date,
+                'file_id' => $file_id,
+                'status' => 'pending-update'
+            ]);
+    
+            $users = User::whereHas('role', function($q){ $q->where('role_name', 'Quality Assurance Director'); })->get();
+            foreach($users as $user) {
+                \Notification::notify([$user], 'Submitted Process Manuals Updates', route('archives-show-file', $file_id));
+            }
+
+            return back()->withMessage('File updated successfully and will be subject for approval.');
         }
-
-        return back()->withMessage('File updated successfully');
     }
 
     public function downloadFile($id)

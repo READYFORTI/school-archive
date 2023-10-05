@@ -8,6 +8,7 @@
     </div>
     <div class="m-3 bg-white py-4">
         <div class="row m-3">
+            @include('layout.alert')
             <div class="col-12 mb-4 text-right">
                 @if($file->type == 'audit_reports'
                     && !empty($file->audit_report)

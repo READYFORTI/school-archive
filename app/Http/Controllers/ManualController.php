@@ -10,7 +10,9 @@ use App\Models\User;
 use App\Models\File;
 use App\Models\Office;
 use App\Models\Manual;
+use App\Models\FileItem;
 use App\Models\Directory;
+use App\Models\FileHistory;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\DirectoryRepository;
 
@@ -39,7 +41,6 @@ class ManualController extends Controller
         $directories = [];
         if(Auth::user()->role->role_name == 'Process Owner') {
             $directories = $this->dr->getDirectoriesAssignedByGrandParent($this->parent);
-            dd($directories);
         }
         return view('manuals.create', compact('directories'));
     }
@@ -80,14 +81,116 @@ class ManualController extends Controller
             'file_id' => $file_id
         ]);
 
-        $users = User::whereHas('role', function($q){ $q->whereIn('role_name', \FileRoles::MANUALS); })->get();
+        $users = User::whereHas('role', function($q){ $q->whereIn('role_name', 'Quality Assurance Director'); })->get();
         foreach($users as $user) {
-            if($this->dr->allowedDirectory($directory, $user)) {
-                \Notification::notify([$user], 'Submitted Process Manuals', route('archives-show-file', $file_id));
-            }
+            \Notification::notify([$user], 'Submitted Process Manuals', route('archives-show-file', $file_id));
         }
 
         
         return back()->withMessage('Manual created successfully');
+    }
+
+    public function allManuals(Request $request)
+    {
+        $status = Auth::user()->role->role_name == 'Quality Assurance Director' ? ['pending-cmt', 'pending-update-cmt'] : ['pending', 'pending-update'];
+        $manuals = Manual::whereNotIn('status', $status)->get();
+
+        return view('manuals.index', compact('manuals'));
+    }
+
+    public function pendingManuals(Request $request)
+    {
+        $title = 'Pending Manuals';
+        $status = Auth::user()->role->role_name == 'Quality Assurance Director' ? 'pending' : 'pending-cmt';
+        $manuals = Manual::where('status', $status)->get();
+
+        return view('manuals.index', compact('manuals', 'title'));
+    }
+
+    public function pendingUpdateManuals(Request $request)
+    {
+        $title = 'Manuals - Pending Updates';
+        $status = Auth::user()->role->role_name == 'Quality Assurance Director' ? 'pending-update' : 'pending-update-cmt';
+        $manuals = Manual::where('status', $status)->get();
+
+
+        return view('manuals.index', compact('manuals', 'title'));
+    }
+
+    public function rejectManuals(Request $request, $id)
+    {
+        $current_status = Auth::user()->role->role_name == 'Quality Assurance Director' ? ['pending', 'pending-update'] : ['pending-cmt', 'pending-update-cmt'];
+        $manual = Manual::whereIn('status', $current_status)->where('id', $id)->firstOrFail();
+        $manual->status = 'rejected';
+        $manual->save();
+
+        $file_id = $manual->file_id;
+        $user = User::where('id', $manual->user_id)->get();
+        \Notification::notify($user, 'Rejected Process Manual', route('archives-show-file', $file_id));
+
+        return redirect()->back()->with('message', 'You have successfully rejected manual');
+    }
+
+    public function approveManuals(Request $request, $id)
+    {
+        $current_status = Auth::user()->role->role_name == 'Quality Assurance Director' ? ['pending', 'pending-update'] : ['pending-cmt', 'pending-update-cmt'];
+        $manual = Manual::whereIn('status', $current_status)->where('id', $id)->firstOrFail();
+
+        if(!empty($manual->parent_manual_id)) {// Update the parent manual with child
+            $parent_manual = Manual::findOrFail($manual->parent_manual_id);
+            $parent_file = File::findOrFail($parent_manual->file_id);
+            $status = Auth::user()->role->role_name == 'Quality Assurance Director' ? 'pending-update-cmt' : 'approved';
+        }else{
+            $status = Auth::user()->role->role_name == 'Quality Assurance Director' ? 'pending-cmt' : 'approved';
+        }
+
+        $manual->status = $status;
+        $manual->save();
+
+        $file_id = $manual->file_id;
+        if($status == 'approved') {
+            if(!empty($parent_manual)) {// Update the parent manual with child
+                // Create File History for Manual
+                $fileHistory = FileHistory::create([
+                    'file_id' => $parent_manual->file_id,
+                    'file_name' => $parent_manual->name,
+                    'description' => $parent_manual->description,
+                ]);
+                
+                FileItem::where('file_id', $parent_manual->file_id)
+                            ->whereNull('file_history_id')
+                            ->update(['file_history_id' => $fileHistory->id]);
+
+                // Update Manual Updates File Items
+                FileItem::where('file_id', $manual->file_id)
+                            ->whereNull('file_history_id')
+                            ->update(['file_id' => $parent_manual->file_id]);
+                
+                $parent_manual->name = $manual->name;
+                $parent_manual->description = $manual->description;
+                $parent_manual->save();
+
+                $parent_file->file_name = $manual->name;
+                $parent_file->description = $manual->description;
+                $parent_file->save();
+
+                // Send notification to user for approval
+                $users = User::whereHas('role', function($q){ $q->where('role_name', \FileRoles::MANUALS); })
+                            ->orWhere('id', $manual->user_id)->get();
+                            \Notification::notify($users, 'Approved Process Manual Updates', route('archives-show-file', $parent_manual->file_id));
+
+            }else{
+                // Send notification to user for approval
+                $users = User::whereHas('role', function($q){ $q->where('role_name', \FileRoles::MANUALS); })
+                            ->orWhere('id', $manual->user_id)->get();
+                \Notification::notify($users, 'Approved Process Manual', route('archives-show-file', $file_id));
+            }
+        }else{
+            // Send notification to CMT Users for approval
+            $users = User::whereHas('role', function($q){ $q->where('role_name', 'College Management Team'); })->get();
+            \Notification::notify($users, 'Pre-approved Process Manual', route('archives-show-file', $file_id));
+        }
+
+        return redirect()->back()->with('message', 'You have successfully approved manual');
     }
 }

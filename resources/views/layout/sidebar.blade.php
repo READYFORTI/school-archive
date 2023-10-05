@@ -375,7 +375,7 @@
                                 @if(!empty(auth()->user()->unreadNotifications) && count(auth()->user()->unreadNotifications) > 0)
                                 @foreach(auth()->user()->unreadNotifications->take(5) as $notification)
                                 <li class="d-flex align-items-center py-2">
-                                    <a href="{{ $notification->data['link'] ?? route('notifications') }}?read={{ $notification->id}}" style="text-decoration: none;" class="d-flex align-items-center">
+                                    <a href="{{ $notification->data['link'] ?? route('notifications') }}?read={{ $notification->id}}" target="_blank" style="text-decoration: none;" class="d-flex align-items-center">
                                         @if (isset($notification->data['image']) && !empty($notification->data['image']))
                                             <div class="me-2">
                                                 <img src="{{ Storage::url(auth()->user()->img) }}" alt="User Image" class="rounded-circle">

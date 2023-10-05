@@ -305,6 +305,15 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/', [MessageController::class, 'index'])->name('messages');
         Route::post('/send', [MessageController::class, 'store'])->name('messages.send');
     });
+
+    Route::prefix('process-manuals')->name('process-manuals.')->middleware('manual_list')->group(function(){
+        Route::get('/', [ManualController::class, 'allManuals'])->name('all');
+        Route::get('/pending', [ManualController::class, 'pendingManuals'])->name('pending');
+        Route::get('/pending-updates', [ManualController::class, 'pendingUpdateManuals'])->name('pending-updates');
+
+        Route::patch('/{id}', [ManualController::class, 'approveManuals'])->name('approve');
+        Route::delete('/{id}', [ManualController::class, 'rejectManuals'])->name('reject');
+    });
 });
 
 Route::resources([

@@ -83,5 +83,6 @@ class Kernel extends HttpKernel
         'po' => Po::class,
         'staff' => Staff::class,
         'hr' => Hr::class,
+        'manual_list' => \App\Http\Middleware\ManualList::class,
     ];
 }

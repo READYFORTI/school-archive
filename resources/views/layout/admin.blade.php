@@ -17,7 +17,14 @@
             <a class="dropdown-item {{ request()->routeIs('admin-announcement-create') ? 'active' : '' }}" href="{{ route('admin-announcement-create') }}"><span>Create Announcement</span></a>
         </div>
 </li> -->
-
+<li class="nav-item dropdown {{ request()->is('process-manuals*') ? 'active' : '' }}">
+    <a data-bs-auto-close="false" class="dropdown-toggle nav-link text-start py-1 px-0 position-relative" aria-expanded="true" data-bs-toggle="dropdown" href="#"><i class="fas fa-receipt mx-3"></i><span class="text-nowrap mx-2">Process Manuals</span><i class="fas fa-caret-down float-none float-lg-end me-3"></i></a>
+    <div class="dropdown-menu drop-menu border-0 animated fadeIn {{ request()->is('process-manuals*') ? 'show' : '' }}" data-bs-popper="none">
+        <a class="dropdown-item {{ request()->routeIs('process-manuals.pending') ? 'active' : '' }}" href="{{ route('process-manuals.pending') }}"><span>Pending</span></a>
+        <a class="dropdown-item {{ request()->routeIs('process-manuals.pending-updates') ? 'active' : '' }}" href="{{ route('process-manuals.pending-updates') }}"><span>Pending Updates</span></a>
+        <a class="dropdown-item {{ request()->routeIs('process-manuals.all') ? 'active' : '' }}" href="{{ route('process-manuals.all') }}"><span>All Process Manuals</span></a>
+    </div>
+</li>
 <li class="nav-item dropdown {{ request()->routeIs('admin-survey-reports') || request()->routeIs('admin-consolidated-audit-reports')  ? 'show' : '' }}">
     <a data-bs-auto-close="false" class="dropdown-toggle nav-link text-start py-1 px-0 position-relative {{ request()->routeIs('admin-survey-reports') || request()->routeIs('admin-consolidated-audit-reports') ? 'active' : '' }}" aria-expanded="true" data-bs-toggle="dropdown" href="#"><i class="fas fa-book mx-3"></i><span class="text-nowrap mx-2">Pending Reports</span><i class="fas fa-caret-down float-none float-lg-end me-3"></i></a>
         <div class="dropdown-menu drop-menu border-0 animated fadeIn {{ request()->routeIs('admin-survey-reports') || request()->routeIs('admin-consolidated-audit-reports') ? 'show' : '' }}" data-bs-popper="none">

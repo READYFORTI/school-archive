@@ -90,4 +90,31 @@
         </a>
     </li>
     @endif
+    @if(!empty($file->manual) && $file->manual->status != 'approved' && 
+        in_array(Auth::user()->role->role_name, ['Quality Assurance Director', 'Administrator', 'College Management Team'])
+    )
+    <li>
+        <a href="#" 
+            class="text-decoration btn-confirm" 
+            data-target="#approve-manual-{{ $file->manual->id }}" 
+            data-message="Are you sure you wan't to approve this process manuals?">
+                <i class="fa fa-check"></i> Approve Manuals
+        </a>
+        <form action="{{ route('process-manuals.approve', $file->manual->id) }}" method="POST" id="approve-manual-{{ $file->manual->id }}">
+            @csrf
+            @method('PATCH')
+        </form>
+    </li>
+    <li>
+        <a href="#" class="text-decoration btn-confirm" 
+            data-target="#reject-manual-{{ $file->manual->id }}"
+            data-message="Are you sure you wan't to reject this process manuals?">
+                <i class="fa fa-ban"></i> Reject Manuals
+        </a>
+        <form action="{{ route('process-manuals.reject', $file->manual->id) }}" method="POST" id="reject-manual-{{ $file->manual->id }}">
+            @csrf
+            @method('DELETE')
+        </form>
+    </li>
+    @endif
 </ul>
