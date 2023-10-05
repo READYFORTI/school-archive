@@ -52,6 +52,11 @@ class File extends Model
         return $this->hasOne(AuditReport::class);
     }
 
+    public function manual()
+    {
+        return $this->hasOne(Manual::class);
+    }
+
     public function trackings()
     {
         $track_records = [];

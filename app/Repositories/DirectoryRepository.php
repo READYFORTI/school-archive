@@ -136,6 +136,15 @@ class DirectoryRepository {
                     })->orWhere('type', 'templates');
                 });
             }
+            $grandparent = $this->getGrandParentDirectory($current_directory)->name ?? '';
+            if($route == 'archives' && $grandparent == 'Manuals') {
+                $q->where(function($q) {
+                    $q->where('type', 'manuals')
+                        ->whereHas('manual',function($q) {
+                            $q->where('status', 'approved');
+                        });
+                });
+            }
         })->get();
 
         return $files;
