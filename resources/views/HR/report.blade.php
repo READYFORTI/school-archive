@@ -185,10 +185,10 @@
                                     }
                                 }
                             });
+                            $('#pieChartApriori').removeClass('d-none');
                         }else{
                             $('#noResult').removeClass('d-none');
                         }
-                        $('#pieChartApriori').removeClass('d-none');
                         window.scrollTo(0, document.body.scrollHeight);
                     }
                 });
