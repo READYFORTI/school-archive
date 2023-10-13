@@ -33,8 +33,10 @@
                 <div class="col-lg-6">
                     <div class="container h-100 d-flex align-items-center">
                         <div class="h-fit text-center">
-                            <img src="/storage/assets/dnsc-logo.png" alt="dnsc icon" class="img-fluid w-75">
-                            <h3 class="text-center mt-2 text-success">DOCUMENT ARCHIVING AND TRACKING</h3>
+                            <img src="/storage/assets/dnsc-logo.png" alt="dnsc icon" class="img-fluid w-50">
+                            <h3 class="text-center mt-3 text-success text-lg">DOCUMENT ARCHIVING AND TRACKING FOR ISO</h3>
+                            {{-- <h3 class="text-center mt-3 text-success display-4">DOCUMENT ARCHIVING AND TRACKING FOR ISO</h3> --}}
+
                         </div>
                     </div>
                 </div>
