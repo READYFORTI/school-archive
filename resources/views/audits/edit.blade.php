@@ -101,6 +101,7 @@
                                                             @endif
                                                         </td>
                                                     </tr>
+                                                    @if (!empty($area_user->cars))
                                                     <tr>
                                                         <td >👩🏻‍💻 {{ sprintf("%s %s", $user->firstname ?? '', $user->surname ?? '') }}</td>
                                                         <td>{{ sprintf("%s > %s", $area_user->audit_plan_area->area->parent->area_name ?? '', $area_user->audit_plan_area->area->area_name ?? 'None') }}</td>
@@ -120,6 +121,7 @@
                                                             @endif
                                                         </td>
                                                     </tr>
+                                                    @endif
                                                 @endforeach
                                             @endforeach
                                         </tbody>
