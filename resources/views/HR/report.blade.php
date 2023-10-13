@@ -86,6 +86,10 @@
                                 </div>
                                 <div class="row" >
                                     <div class="col-12">
+                                        <div class="mt-4 loader text-info text-center d-none">
+                                            <i class="fa fa-cog fa-4x fa-spin"></i>
+                                            <h3 class="mt-2">Loading...</h3>
+                                        </div>
                                         <div id="noResult" class="mt-4 text-warning text-center d-none">
                                             <i class="fa fa-info-circle fa-4x"></i>
                                             <h3 class="mt-2">No result found.</h3>
@@ -156,11 +160,14 @@
             var facility = $('#facility').val();
             $('#pieChartApriori').addClass('d-none');
             $('.noResult').addClass('d-none');
+            $('.loader').removeClass('d-none');
+            window.scrollTo(0, document.body.scrollHeight);
             if(facility !== '') {
                 $.ajax({
                     url : "{{ route('hr-survey-apriori') }}?facility=" + facility,
                     type: 'GET',
                     success: function(data) {
+                        $('.loader').addClass('d-none');
                         if(data.facilities && data.facilities.length > 0) {
                             new Chart("pieChartApriori", {
                                 type: "pie",
