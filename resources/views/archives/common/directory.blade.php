@@ -5,7 +5,8 @@
         data-bs-toggle="dropdown" aria-expanded="false" 
         data-route="{{ route($route ?? 'archives-page') }}?directory={{ $directory->id }}" style="border:none">
             <img src="{{ Storage::url('assets/folder.png') }}" alt="Folder.png" class="img-fluid">
-            <p class="text-black" style="text-overflow: ellipsis"><small>{{ $directory->name ?? '' }}</small></p>
+            {{-- <p class="text-black" style="text-overflow: ellipsis"><small>{{ $directory->name ?? '' }}</small></p> --}}
+            <p class="text-black" style="text-overflow: ellipsis">{{ $directory->name ?? '' }}</p>
     </button>
     <ul class="dropdown-menu text-left">
         <li><a href="{{ route($route ?? 'archives-page') }}?directory={{ $directory->id }}" class="text-decoration-none px-2" ><i class="fa fa-folder"></i> Open Folder</a></li>
