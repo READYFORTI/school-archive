@@ -159,7 +159,7 @@
             e.preventDefault();
             var facility = $('#facility').val();
             $('#pieChartApriori').addClass('d-none');
-            $('.noResult').addClass('d-none');
+            $('#noResult').addClass('d-none');
             $('.loader').removeClass('d-none');
             window.scrollTo(0, document.body.scrollHeight);
             if(facility !== '') {
