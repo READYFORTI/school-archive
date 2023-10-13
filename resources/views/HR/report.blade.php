@@ -71,21 +71,25 @@
                             <div class="card-body pt-2 pb-5">
                                 <h4>Associate</h4>
                                 <hr>
-
                                 <p class="text-success"><strong>Support: 50%, Confidence 50%</strong></p>
                                 <div class="mt-3" >
-                                    <label>Office</label>
-                                    <select name="facility" id="facility" class="form-control" required>
-                                        <option value="">Select Office</option>
-                                        @foreach($offices as $facility)
-                                            <option value="{{ $facility->name }}">{{ $facility->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <button class="btn btn-success mt-2 btn-associate">Associate</button>
-                                    
+                                    <form action="#" id="associateForm">
+                                        <label>Office</label>
+                                        <select name="facility" id="facility" class="form-control" required>
+                                            <option value="">Select Office</option>
+                                            @foreach($offices as $facility)
+                                                <option value="{{ $facility->name }}">{{ $facility->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button class="btn btn-success mt-2 btn-associate">Associate</button>
+                                    </form>
                                 </div>
                                 <div class="row" >
                                     <div class="col-12">
+                                        <div id="noResult" class="mt-4 text-warning text-center d-none">
+                                            <i class="fa fa-info-circle fa-4x"></i>
+                                            <h3 class="mt-2">No result found.</h3>
+                                        </div>
                                         <canvas id="pieChartApriori" class="d-none"></canvas>
                                     </div>
                                 </div>
@@ -146,16 +150,18 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             }
         });
-        
-        $('.btn-associate').on('click', function(){
+            
+        $('#associateForm').on('submit', function(e){
+            e.preventDefault();
             var facility = $('#facility').val();
             $('#pieChartApriori').addClass('d-none');
+            $('.noResult').addClass('d-none');
             if(facility !== '') {
                 $.ajax({
                     url : "{{ route('hr-survey-apriori') }}?facility=" + facility,
                     type: 'GET',
                     success: function(data) {
-                        if(data.facilities.length > 0) {
+                        if(data.facilities && data.facilities.length > 0) {
                             new Chart("pieChartApriori", {
                                 type: "pie",
                                 data: {
@@ -173,9 +179,10 @@
                                 }
                             });
                         }else{
-                            $('#pieChartApriori').html("<h4 class='text-warning'>No Available Data</h4>")
+                            $('#noResult').removeClass('d-none');
                         }
                         $('#pieChartApriori').removeClass('d-none');
+                        window.scrollTo(0, document.body.scrollHeight);
                     }
                 });
             }
