@@ -12,7 +12,7 @@
             <div class="row col-12 mt-4">
                 @foreach($areas as $area)
                     <div class="col-3">
-                        <a href="{{ route('evidences') }}?directory={{ $area->directory->id }}">
+                        <a href="{{ route('evidences') }}?directory={{ $area->directory->id }}" target="_blank">
                             <div class="card bg-success text-white">
                                 <div class="card-body ">
                                     <div class="block-content block-content-full">
