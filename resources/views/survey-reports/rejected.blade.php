@@ -1,27 +1,20 @@
 @extends('layout.sidebar')
 @section('title')
-<title>Consolidated Audit Reports</title>
+<title>Rejected Survey Reports</title>
 @endsection
 @section('page')
     <div class="page-header">
-        <h1>Consolidated Audit Reports</h1>
+        <h1>Rejected Survey Reports</h1>
     </div>
     <div class="container">
         @include('layout.alert')
         <div class="mb-4 row">
             <div class="row mt-4 col-12">
-                @foreach($consolidated_audit_reports as $report)
+                @foreach($survey_reports as $report)
                     <div class="col-2">
                         <div class="btn text-center align-items-center justify-content-center btn-directory" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="{{ Storage::url('assets/file-white.png') }}" alt="Folder.png" class="img-fluid">
-                            <p class="text-black" style="text-overflow: ellipsis"><small>{{ $report->name ?? '' }}</small></p>
-                            
-                            <a href="#" class="btn btn-sm btn-success btn-confirm" data-message="Are you sure you want to approve?" data-target="#approve_report_{{ $report->id }}">Approve</button>
-                                <form id="approve_report_{{ $report->id }}" action="{{ route(auth()->user()->role->role_name == 'College Management Team' ? 'cmt.consolidated-audit-reports.approve' : 'admin-consolidated-audit-reports.approve', $report->id) }}" class="d-none" method="POST">@csrf</form>
-                            </a>
-                            <a href="#" class="btn btn-sm btn-warning btn-confirm" data-message="Are you sure you want to reject?" data-target="#reject_report_{{ $report->id }}">Reject</button>
-                                <form id="reject_report_{{ $report->id }}" action="{{ route(auth()->user()->role->role_name == 'College Management Team' ? 'cmt.consolidated-audit-reports.reject' : 'admin-consolidated-audit-reports.reject', $report->id) }}" class="d-none" method="POST">@csrf</form>
-                            </a>
+                            <p class="text-white" style="text-overflow: ellipsis"><small>{{ $report->name ?? '' }}</small></p>
                         </div>
                         <ul class="dropdown-menu px-2">
                             <li><a href="{{ route('archives-show-file', $report->file_id) }}" target="_blank" class="text-decoration-none"><i class="fa fa-eye"></i> Open</a></li>
@@ -33,13 +26,6 @@
                                 data-updated-at="{{ $report->created_at ? $report->created_at->format('M d, Y h:i A') : '' }}"
                                 data-description="{{ $report->description ?? ''}}"
                             ><i class="fa fa-cog"></i> Properties</a></li>
-                            <li>
-                                <a href="#" class="text-decoration-none btn-remarks" data-bs-toggle="modal" data-bs-target="#remarksModal"
-                                    data-file-id="{{ $report->file_id }}"
-                                    data-route="{{ route('save-remarks', $report->file_id) }}">
-                                        <i class="fa fa-envelope"></i> Remarks
-                                </a>
-                            </li>                         
                         </ul>
                     </div>
                 @endforeach
@@ -121,7 +107,7 @@
 
 @section('js')
 <script>
-    
+
     var files = {!! json_encode($files) !!};
     var user_id = parseInt("{{ Auth::user()->id }}");
 
@@ -132,65 +118,6 @@
         $('#propertyCreated').html($(this).data('created-at'));
         $('#propertyUpdated').html($(this).data('updated-at'));
         $('#propertyDescription').html($(this).data('description'));
-    });
-
-    $('.btn-confirm').on('click', function(){
-        var form = $(this).data('target');
-        var message = $(this).data('message') ?? "Are you sure you wan't save changes?";
-        Swal.fire({
-            text: message,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $(form).submit();
-                }
-        });
-    });
-
-    $('.btn-remarks').on('click', function(){
-        var file_id = parseInt($(this).data('file-id'));
-        
-        $('.btn-submit-remarks').hide();
-        $('.remarksDetailForm').hide();
-
-        if( $(this).data('route')) {
-            $('#remarksForm').prop('action', $(this).data('route'));
-            $('.btn-submit-remarks').show();
-            $('.remarksDetailForm').show();
-        }
-        
-        
-        var file = files.find(item => 
-            item.id === file_id
-        );
-
-        $('.recent-remarks-table').html('');
-        if(file.remarks.length > 0) {
-            var remark = file.remarks.find(item => item.user_id === user_id);
-            if(remark) {
-                $('#remarks-' + remark.type).prop('checked', true);
-                $('#remarks-comments').html(remark.comments);
-            }
-            file.remarks.forEach(function(i){
-                $('.recent-remarks-table').append(`
-                    <tr>
-                        <td class="text-center">
-                            <i class="fa fa-user text-` + i.type + ` fa-2x"></i><br/>
-                            <small class="badge bg-secondary" data-bs-toggle="tooltip" title="` + i.created_at_formatted + `">` + i.created_at_for_humans + `</small>
-                        </td>
-                        <td><strong class="px-0">` + i.user.firstname + ` ` + i.user.surname + `</strong><br/>` +
-                            `(` + i.user.role.role_name + `)<br/>` + 
-                            i.comments + `
-                        </td>
-                    </tr>
-                `);
-            });
-        }
-        
     });
 </script>
 @endsection

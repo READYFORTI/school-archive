@@ -21,6 +21,13 @@ class ReportsController extends Controller
         return view('survey-reports.index', compact('survey_reports', 'files'));
     }
 
+    public function rejectedSurveyReports()
+    {
+        $survey_reports = SurveyReport::where('status', 'rejected')->get();
+        $files = File::where('type', 'survey_reports')->get();
+        return view('survey-reports.rejected', compact('survey_reports', 'files'));
+    }
+
     public function approveSurveyReport($id)
     {
         $report = SurveyReport::findOrFail($id);
@@ -65,6 +72,13 @@ class ReportsController extends Controller
         $consolidated_audit_reports = ConsolidatedAuditReport::where('status', 'pending')->get();
         $files = File::where('type', 'consolidated_audit_reports')->get();
         return view('consolidated-audit-reports.index', compact('consolidated_audit_reports', 'files'));
+    }
+
+    public function rejectedConsolidatedAuditReports()
+    {
+        $consolidated_audit_reports = ConsolidatedAuditReport::where('status', 'pending')->get();
+        $files = File::where('type', 'consolidated_audit_reports')->get();
+        return view('consolidated-audit-reports.rejected', compact('consolidated_audit_reports', 'files'));
     }
 
     public function approveConsolidatedAuditReport($id)

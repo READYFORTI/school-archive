@@ -56,7 +56,10 @@ class TemplateController extends Controller
     {
         $user = Auth::user();
         
-        $directory = Directory::findOrFail($request->current_directory);
+        $dir = Directory::findOrFail($request->current_directory);
+        $year = Carbon::parse($request->date)->format('Y') ?? date('Y');
+        $directory = $this->dr->getDirectory($year, $dir->id);  
+
         $file_id = null;
         if ($request->hasFile('file_attachments')) {
             $file = $this->dr->storeFile(

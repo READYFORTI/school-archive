@@ -138,12 +138,14 @@ Route::middleware(['auth'])->group(function(){
 
         Route::prefix('survey-reports')->group(function(){
             Route::get('/', [AdminReportsController::class, 'surveyReports'])->name('admin-survey-reports');
+            Route::get('/rejected', [AdminReportsController::class, 'rejectedSurveyReports'])->name('admin-survey-reports.rejected');
             Route::post('/{id}/approve', [AdminReportsController::class, 'approveSurveyReport'])->name('admin-survey-reports.approve');
             Route::post('/{id}/reject', [AdminReportsController::class, 'rejectSurveyReport'])->name('admin-survey-reports.reject');
         });
 
         Route::prefix('consolidated-audit-reports')->group(function(){    
             Route::get('/', [AdminReportsController::class, 'consolidatedAuditReports'])->name('admin-consolidated-audit-reports');
+            Route::get('/rejected', [AdminReportsController::class, 'rejectedConsolidatedAuditReports'])->name('admin-consolidated-audit-reports.rejected');
             Route::post('/{id}/approve', [AdminReportsController::class, 'approveConsolidatedAuditReport'])->name('admin-consolidated-audit-reports.approve');
             Route::post('/{id}/reject', [AdminReportsController::class, 'rejectConsolidatedAuditReport'])->name('admin-consolidated-audit-reports.reject');
         });
