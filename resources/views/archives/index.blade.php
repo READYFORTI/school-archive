@@ -26,14 +26,14 @@
     <div class="m-3">
         <div style="text-align:right">
             @if(Auth::user()->role->role_name == Roles::PROCESS_OWNER 
-                && $page_title = 'Manuals' 
+                && $page_title == 'Manuals' 
                 && !empty($current_directory->area) && $current_directory->area->type == 'process'
             )   
                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#manualsModal"><i class="fa fa-book"></i> Upload Manual</button>
             @endif
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fa fa-search"></i> Search</button>
             @if(
-                    (Auth::user()->role->role_name == Roles::DOCUMENT_CONTROL_CUSTODIAN
+                    (in_array(Auth::user()->role->role_name, [Roles::DOCUMENT_CONTROL_CUSTODIAN, Roles::PROCESS_OWNER])
                         && !empty($current_directory)
                         && in_array($page_title, ['Evidences', 'Manuals'])
                         && (!empty($current_directory->area) && $current_directory->area->type == 'process')
