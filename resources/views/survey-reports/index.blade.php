@@ -11,7 +11,7 @@
         <div class="mb-4 row">
             <div class="row mt-4 col-12">
                 @foreach($survey_reports as $report)
-                    <div class="col-2 text-center">
+                    <div class="col-2">
                         <div class="btn align-items-center justify-content-center btn-directory" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="{{ Storage::url('assets/file-white.png') }}" alt="Folder.png" class="img-fluid">
                             <p class="text-white" style="text-overflow: ellipsis"><small>{{ $report->name ?? '' }}</small></p>
@@ -23,7 +23,7 @@
                                 <form id="reject_report_{{ $report->id }}" action="{{ route(auth()->user()->role->role_name == 'College Management Team' ? 'cmt.survey-reports.reject' : 'admin-survey-reports.reject', $report->id) }}" class="d-none" method="POST">@csrf</form>
                             </a>
                         </div>
-                        <ul class="dropdown-menu text-center">
+                        <ul class="dropdown-menu px-2">
                             <li><a href="{{ route('archives-show-file', $report->file_id) }}" target="_blank" class="text-decoration-none"><i class="fa fa-eye"></i> Open</a></li>
                             <li><a href="#" class="text-decoration-none btn-property"
                                 data-bs-toggle="modal" data-bs-target="#propertyModal"

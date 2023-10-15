@@ -50,13 +50,16 @@ class EvidenceController extends Controller
 
         if(Auth::user()->role->role_name == 'Process Owner') {
             $directories = $this->dr->getDirectoriesAssignedByGrandParent($this->parent);
-            $directory = $directories->where('id', $request->directory)->firstOrFail();
+            $dir = $directories->where('id', $request->directory)->firstOrFail();
+            
+            $year = Carbon::parse($request->date)->format('Y') ?? date('Y');
+            $directory = $this->dr->getDirectory($year, $dir->id);  
         }else{
             $parent_directory = Directory::where('name', $this->parent)->whereNull('parent_id')->firstOrFail();
 
             $user = Auth::user();
             $dir = $this->dr->makeAreaRootDirectories($user->assigned_area, $parent_directory->id);
-            $year = Carbon::parse($request->date)->format('Y');
+            $year = Carbon::parse($request->date)->format('Y') ?? date('Y');
             $directory = $this->dr->getDirectory($year, $dir->id);    
         }
         

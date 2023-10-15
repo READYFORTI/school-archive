@@ -216,6 +216,9 @@ class AuditController extends Controller
         $process = Area::findOrFail($request->process);
 
         $directory = $this->dr->makeAreaRootDirectories($process, $dir->id);
+        $year = Carbon::parse($request->date)->format('Y');
+        $directory = $this->dr->getDirectory($year, $directory->id);
+
         $file_id = null;
         if ($request->hasFile('file_attachments')) {
             $file = $this->dr->storeFile(
@@ -302,6 +305,9 @@ class AuditController extends Controller
         $audit_plan = AuditPlan::findOrFail($request->audit_plan);
         $parent_directory = Directory::where('name', 'Consolidated Audit Reports')->whereNull('parent_id')->firstOrFail();
         $directory = $this->dr->getDirectory($audit_plan->name, $parent_directory->id);
+
+        $year = Carbon::parse($request->date)->format('Y');
+        $directory = $this->dr->getDirectory($year, $directory->id);
         
         $file_id = null;
         if ($request->hasFile('file_attachments')) {
