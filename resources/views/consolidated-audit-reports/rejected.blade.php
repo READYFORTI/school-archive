@@ -4,16 +4,16 @@
 @endsection
 @section('page')
     <div class="page-header">
-        <h1>Rejected Consolidated Audit Reports</h1>
+        <h2>Rejected Consolidated Audit Reports</h2>
     </div>
-    <div class="container">
+   
         @include('layout.alert')
-        <div class="mb-4 row">
-            <div class="row mt-4 col-12">
+        <div class="m-3 row">
+            <div class="row mt-4 col-8">
                 @foreach($consolidated_audit_reports as $report)
                     <div class="col-2">
                         <div class="btn text-center align-items-center justify-content-center btn-directory" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ Storage::url('assets/file-white.png') }}" alt="Folder.png" class="img-fluid">
+                            <img src="{{ Storage::url('assets/file-red.png') }}" alt="Folder.png" class="img-fluid">
                             <p class="text-black" style="text-overflow: ellipsis"><small>{{ $report->name ?? '' }}</small></p>
                         </div>
                         <ul class="dropdown-menu px-2">
@@ -31,7 +31,7 @@
                 @endforeach
             </div>
         </div>
-    </div>
+    
 
     <div class="modal fade" id="propertyModal" tabindex="-1" aria-labelledby="propertyModalLabel" aria-hidden="true">
         <div class="modal-dialog">

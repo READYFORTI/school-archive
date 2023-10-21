@@ -34,8 +34,8 @@
 <div class="page-header pb-2">
     <h2>{{ $title ?? 'All Manuals'}}</h2>
 </div>
-<div class="container">
-    <div class="row mt-2">
+
+    <div class="row m-3">
         <div class="col-12 px-2">
             <div class="card p-3">
                 <div class="card-body pt-2">
@@ -89,7 +89,7 @@
             </div>
         </div>
     </div>
-</div>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
