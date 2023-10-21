@@ -76,7 +76,7 @@ class ReportsController extends Controller
 
     public function rejectedConsolidatedAuditReports()
     {
-        $consolidated_audit_reports = ConsolidatedAuditReport::where('status', 'pending')->get();
+        $consolidated_audit_reports = ConsolidatedAuditReport::where('status', 'rejected')->get();
         $files = File::where('type', 'consolidated_audit_reports')->get();
         return view('consolidated-audit-reports.rejected', compact('consolidated_audit_reports', 'files'));
     }
