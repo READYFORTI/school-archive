@@ -6,9 +6,9 @@
     <div class="page-header">
         <h1>Survey Reports</h1>
     </div>
-    <div class="container">
+    {{-- <div class="container"> --}}
         @include('layout.alert')
-        <div class="mb-4 row">
+        <div class="m-3 row">
             <div class="row mt-4 col-12">
                 @foreach($survey_reports as $report)
                     <div class="col-2">
@@ -44,7 +44,7 @@
                 @endforeach
             </div>
         </div>
-    </div>
+    {{-- </div> --}}
 
     <div class="modal fade" id="propertyModal" tabindex="-1" aria-labelledby="propertyModalLabel" aria-hidden="true">
         <div class="modal-dialog">

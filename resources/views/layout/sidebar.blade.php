@@ -420,7 +420,8 @@
                     </li>
                     <li class="nav-item me-2 ms-auto">
                         <a class="nav-link" href="{{ route('logout') }}">
-                            <i class="fas fa-power-off text-warning" style="font-size: 27px; margin-top: 2px;"></i>
+                            <i class="fas fa-sign-out-alt text-warning" style="font-size: 27px; margin-top: 2px;"></i>
+
                         </a>
                     </li>
                 </ul>
