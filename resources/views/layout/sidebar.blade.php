@@ -301,7 +301,7 @@
 @section('content')
     <ul class="nav shadow d-flex sidebar mobile-hid">
         <li class="nav-item logo-holder">
-            <div class="text-center text-white logo py-4 mx-4"><img class="img-fluid" src="http://localhost:8000/storage/assets/dnsc-logo.png" width="130px"><a class="float-end text-white" id="sidebarToggleHolder" href="#"><i class="fas fa-bars" id="sidebarToggle" style=""></i></a></div>
+            <div class="text-center text-white logo py-4 mx-4"><img class="img-fluid" src="/storage/assets/dnsc-logo.png" width="130px"><a class="float-end text-white" id="sidebarToggleHolder" href="#"><i class="fas fa-bars" id="sidebarToggle" style=""></i></a></div>
         </li>
     
         <div class="nav-container">
