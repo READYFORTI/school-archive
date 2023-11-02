@@ -190,7 +190,7 @@
         }
     });
 
-    $('.btn-add-process').on('click', function(){
+    $('.btn-add-process').on('click', function() {
         var process_name = $('.process_name').val();
         var process_id = $('.process').val();
         
@@ -206,20 +206,30 @@
         });
 
         var selected = tree.treeview('getSelected');
-        var selectedAreas = [];
-        selected.forEach(function(area){
+        var area_names = '';
+        var area_ids = '';
+        var i = 0;
+        selected.forEach(function(area) {
             var parent = tree.treeview('getNode', area.parentId);
-            $('.table-process tbody').append(`<tr>
-                    <td>` + parent.text + ` > ` + area.text + `</td>
-                    <td>` + auditors_name + `</td>
-                    <td>
-                        <button class="btn btn-danger btn-remove" type="button"><i class="fa fa-times"></i></button>
-                        <input type="hidden" name="process[]" value="` + area.id + `">
-                        <input type="hidden" name="auditors[]" value="` + auditors_id + `">
-                    </td>
-            </tr>`);
+            area_names += parent.text + ` > ` + area.text;
+            area_ids += area.id;
+            if(i < selected.length - 1) {
+                area_names += ', ';
+                area_ids += ',';
+                i++;
+            }
         });
-        
+
+        $('.table-process tbody').append(`<tr>
+                <td>` + area_names + `</td>
+                <td>` + auditors_name + `</td>
+                <td>
+                    <button class="btn btn-danger btn-remove" type="button"><i class="fa fa-times"></i></button>
+                    <input type="hidden" name="area_names[]" value="` + area_names + `">
+                    <input type="hidden" name="process[]" value="` + area_ids + `">
+                    <input type="hidden" name="auditors[]" value="` + auditors_id + `">
+                </td>
+        </tr>`);
 
         $('.btn-close-modal').trigger('click');
     });

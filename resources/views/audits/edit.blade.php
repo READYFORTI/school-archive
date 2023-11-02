@@ -77,52 +77,28 @@
                                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                                   <div class="accordion-body table-responsive">
                                       <table id="collapseTwo" class="table text-black table-process accordion-collapse collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                                        <thead class="text-white text-uppercase bg-secondary"><tr><td>Auditor</td><td>Process</td><td>File Type</td><td>Submitted</td><td>Time Submitted</td><td>Action</td></tr></thead>
+                                        <thead class="text-white text-uppercase bg-secondary">
+                                            <tr>
+                                                <td>Auditors</td>
+                                                <td>Process</td>
+                                                <td>Submitted Cars</td>
+                                                <td>Submitted Audit Report</td>
+                                            </tr>
+                                        </thead>
                                         <tbody>
-                                            @foreach($auditors as $user)
-                                                @foreach($user->audit_plan_area_user as $area_user)
-                                                    <tr>
-                                                        <td >👩🏻‍💻 {{ sprintf("%s %s", $user->firstname ?? '', $user->surname ?? '') }}</td>
-                                                        <td>{{ sprintf("%s > %s", $area_user->audit_plan_area->area->parent->area_name ?? '', $area_user->audit_plan_area->area->area_name ?? 'None') }}</td>
-                                                        <td>
-                                                            {{ !empty($area_user->audit_report) && $area_user->audit_report->file->created_at != $area_user->audit_report->file->updated_at ? 'Revision AR' : 'Audit Report' }}
-                                                        </td>
-                                                        <td>
-                                                            @if (!empty($area_user->audit_report))
-                                                              <span class="text-success">Done</span>
-                                                            @else
-                                                              <span class="text-danger">Not Yet</span>
-                                                            @endif
-                                                          </td>
-                                                        <td>{{ !empty($area_user->audit_report) ? $area_user->audit_report->updated_at->format('F d, Y h:i A') : '' }}</td>
-                                                        <td>
-                                                            @if(!empty($area_user->audit_report))
-                                                                <a href="{{ route('archives-show-file', $area_user->audit_report->file_id) }}" class="text-success" target="_blank"><i class="fa fa-eye"> View</i></a>
-                                                            @endif
-                                                        </td>
-                                                    </tr>
-                                                    @if (!empty($area_user->cars))
-                                                    <tr>
-                                                        <td >👩🏻‍💻 {{ sprintf("%s %s", $user->firstname ?? '', $user->surname ?? '') }}</td>
-                                                        <td>{{ sprintf("%s > %s", $area_user->audit_plan_area->area->parent->area_name ?? '', $area_user->audit_plan_area->area->area_name ?? 'None') }}</td>
-                                                        <td>CARS</td>
-                                                        <td>
-                                                            @if (!empty($area_user->cars))
-                                                              <span class="text-success">Done</span>
-                                                            @else
-                                                              <span class="text-danger">Not Yet</span>
-                                                            @endif
-                                                          </td>
-                                                          
-                                                        <td>{{ !empty($area_user->cars) ? $area_user->cars->created_at->format('F d, Y h:i A') : '' }}</td>
-                                                        <td>
-                                                            @if(!empty($area_user->cars))
-                                                                <a href="{{ route('archives-show-file', $area_user->cars->file_id) }}" class="text-success" target="_blank"><i class="fa fa-eye"> View</i></a>
-                                                            @endif
-                                                        </td>
-                                                    </tr>
-                                                    @endif
-                                                @endforeach
+                                            @foreach($audit_plan->batches as $batch)
+                                                <tr>
+                                                    <td>👩🏻‍💻 {{ $batch->user_names() }}</td>
+                                                    <td>{{ $batch->area_names() }}</td>
+                                                    <td>
+                                                        <!-- <span class="text-success">Done</span> -->
+                                                        <span class="text-danger">Not Yet</span>
+                                                    </td>
+                                                    <td>
+                                                        <!-- <span class="text-success">Done</span> -->
+                                                        <span class="text-danger">Not Yet</span>
+                                                    </td>
+                                                </tr>
                                             @endforeach
                                         </tbody>
                                       </table>

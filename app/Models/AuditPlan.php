@@ -47,4 +47,9 @@ class AuditPlan extends Model
     {
         return $this->hasMany(AuditPlanAreaUser::class);
     }
+
+    public function batches()
+    {
+        return $this->hasMany(AuditPlanBatch::class);
+    }
 }

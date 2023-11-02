@@ -17,6 +17,7 @@ use App\Models\Directory;
 use App\Models\AuditPlan;
 use App\Models\AuditReport;
 use App\Models\AuditPlanArea;
+use App\Models\AuditPlanBatch;
 use App\Models\AuditPlanAreaUser;
 use App\Models\ConsolidatedAuditReport;
 
@@ -134,32 +135,44 @@ class AuditController extends Controller
             Directory::where('id', $audit_plan->directory_id)->update(['name' => $audit_plan->name]);
             AuditPlanArea::where('audit_plan_id', $audit_plan->id)->delete();
             AuditPlanAreaUser::where('audit_plan_id', $audit_plan->id)->delete();
+            AuditPlanBatch::where('audit_plan_id', $audit_plan->id)->delete();
 
-
-            foreach($request->process as $key => $process) {
-                $area = Area::findOrFail($process);
-                $audit_plan_area = AuditPlanArea::firstOrcreate([
-                    'area_id' => $area->id,
-                    'audit_plan_id' => $audit_plan->id,
+            foreach($request->area_names as $key => $area_name) {
+                $batch = AuditPlanBatch::create([
+                    'name' => $area_name,
+                    'audit_plan_id' => $audit_plan->id
                 ]);
 
-                $auditors = explode(',',$request->auditors[$key]);
-                foreach($auditors as $auditor) {
-                    AuditPlanAreaUser::firstOrcreate([
-                        'user_id' => $auditor,
-                        'audit_plan_id' => $audit_plan->id,
-                        'audit_plan_area_id' => $audit_plan_area->id
-                    ]);
-
-                    AreaUser::firstOrcreate([
+                $areas = explode(',',$request->process[$key]);
+                foreach($areas as $process_area) {
+                    $area = Area::findOrFail($process_area);
+                    $audit_plan_area = AuditPlanArea::firstOrcreate([
                         'area_id' => $area->id,
-                        'user_id' => $auditor,
+                        'audit_plan_batch_id' => $batch->id,
+                        'audit_plan_id' => $audit_plan->id,
                     ]);
 
-                    $user = User::find($auditor);
-                    \Notification::notify($user, 'Assigned you to audit plan '.$request->name, route('user.dashboard'));
+                    $auditors = explode(',',$request->auditors[$key]);
+                    foreach($auditors as $auditor) {
+                        AuditPlanAreaUser::firstOrcreate([
+                            'user_id' => $auditor,
+                            'audit_plan_id' => $audit_plan->id,
+                            'audit_plan_batch_id' => $batch->id,
+                            'audit_plan_area_id' => $audit_plan_area->id
+                        ]);
+
+                        AreaUser::firstOrcreate([
+                            'area_id' => $area->id,
+                            'user_id' => $auditor,
+                        ]);
+
+                        $user = User::find($auditor);
+                        \Notification::notify($user, 'Assigned you to audit plan '.$request->name, route('user.dashboard'));
+                    }
                 }
             }
+            
+            
         });
 
         return redirect()->route('lead-auditor.audit.index')->withMessage('Audit plan saved successfully');
@@ -178,6 +191,7 @@ class AuditController extends Controller
             $audit_area_user->delete();
         }
         AuditPlanArea::where('audit_plan_id', $id)->delete();
+        AuditPlanBatch::where('audit_plan_id', $audit_plan->id)->delete();
         $audit_plan->delete();
         
         return redirect()->route('lead-auditor.audit.index')->withMessage('Audit plan deleted successfully');
