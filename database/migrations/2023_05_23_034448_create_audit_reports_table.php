@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('audit_reports', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->foreignId('area_id')->nullable()->constrained();
             $table->foreignId('directory_id')->nullable()->constrained();
             $table->text('description')->nullable();
             $table->foreignId('user_id')->constrained();

@@ -92,7 +92,6 @@
                   </div>
                   @endif
                 </div>
-                
             </div>
           </div>
     </div>
@@ -113,7 +112,7 @@
                         </div>
                         <div class="mb-3 auditors-panel">
                             <label for="name" class="form-label">Auditors</label>
-                            <select id="auditors" class="form-control select2" multiple required data-placeholder="Choose Auditors">
+                            <select id="auditors" class="form-control select2" multiple required data-placeholder="Choose Auditors" required>
                                 @foreach($auditors as $user)
                                     <option value="{{ $user->id }}">{{ sprintf("%s %s", $user->firstname ?? '', $user->surname ?? '') }}</option>
                                 @endforeach
@@ -124,10 +123,10 @@
                         <button type="button" class="btn btn-success btn-add-process"><i class="fa fa-plus"></i> Add</button>
                         <button type="button" class="btn btn-close-modal btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
       <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -191,14 +190,12 @@
     });
 
     $('.btn-add-process').on('click', function() {
-        var process_name = $('.process_name').val();
-        var process_id = $('.process').val();
         
         var auditors_name = '';
         var auditors_id = '';
         $('#auditors option:selected').each(function(i, val){
             auditors_name += val.text;
-            auditors_id  += val.value;
+            auditors_id += val.value;
             if(i <  ($('#auditors option:selected').length -1)) {
                 auditors_name += ', ';
                 auditors_id += ',';

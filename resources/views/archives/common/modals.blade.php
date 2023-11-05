@@ -190,14 +190,14 @@
                         <input type="date" id="date" class="form-control" name="date" max="{{ date('Y-m-d') }}"/>
                     </div>
                     <div class="mb-3">
+                        <label for="search" class="form-label">Description:</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
                         <label for="file_attachments" class="form-label">Attachment</label>
                         <input type="file" class="form-control" name="file_attachments[]" 
                             id="file_attachments" required multiple
                             accept="image/jpeg,image/png,application/pdf,application/vnd.oasis.opendocument.text,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-                    </div>
-                    <div class="mb-3">
-                        <label for="search" class="form-label">Description:</label>
-                        <textarea name="description" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">

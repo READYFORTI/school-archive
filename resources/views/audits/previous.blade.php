@@ -50,20 +50,13 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($audit_plan->plan_areas as $plan_area)
+                                                @foreach($batches as $batch)
                                                 <tr>
-                                                    <td>{{ $plan_area->area->getAreaFullName() }}</td>
-                                                    <td>
-                                                        @foreach($plan_area->users as $user)
-                                                        {{ $user->first_name }} {{ $user->surname }}
-                                                        @if($loop->index < count($plan_area->users) - 1)
-                                                        ,
-                                                        @endif
-                                                        @endforeach
-                                                    </td>
+                                                    <td>{{ $batch->area_names() }}</td>
+                                                    <td>{{ $batch->user_names() }}</td>
                                                     <td><button class="btn btn-danger btn-remove" type="button"><i class="fa fa-times"></i></button></td>
-                                                    <input type="hidden" name="process[]" value="{{ $plan_area->area->id }}">
-                                                    <input type="hidden" name="auditors[]" value="{{ implode(',', $plan_area->users->pluck('id')->toArray()) }}">
+                                                    <input type="hidden" name="process[]" value="{{ implode(',', $batch->areas->pluck('id')->toArray()) }}">
+                                                    <input type="hidden" name="auditors[]" value="{{ implode(',', $batch->users->unique()->pluck('id')->toArray()) }}">
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -81,9 +74,9 @@
     
             <div class="col-lg-3 p-3">
                 <div class="m-3 bg-white py-2">
-     <button class="btn btn text-success" type="button" data-toggle="collapse" data-target="#internal-auditors" aria-expanded="true" aria-controls="internal-auditors" style="border: none; box-shadow: none;">
+                    <button class="btn btn text-success" type="button" data-toggle="collapse" data-target="#internal-auditors" aria-expanded="true" aria-controls="internal-auditors" style="border: none; box-shadow: none;">
                         <i class="fas fa-bars"></i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;INTERNAL AUDITORS
-     </button>
+                    </button>
     
                     <div class="collapse show m-3" id="internal-auditors" style="flex-direction: row-reverse;">
                         @if(auth()->user()->role->role_name == 'Internal Lead Auditor')
@@ -101,7 +94,7 @@
                                             <li class="mb-1">{{ $assignedArea }}</li>
                                             @endforeach
                                         </ul>
-     </div>
+                                    </div>
                                 </div>
                                 @endforeach
                             </div>
@@ -115,30 +108,28 @@
         <div class="modal fade" id="addProcessModal" tabindex="-1" aria-labelledby="addProcessModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-     <div class="modal-header">
+                    <div class="modal-header">
                         <h5 class="modal-title">Add Process And Auditors</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="name" class="form-label">Select Process</label>
-                            <input type="hidden" class="process" id="process">
-                            <input type="hidden" class="process_name" id="process_name">
                             <div class="tree"></div>
                         </div>
                         <div class="mb-3 auditors-panel">
                             <label for="name" class="form-label">Auditors</label>
                             <select id="auditors" class="form-control select2" multiple required data-placeholder="Choose Auditors">
                                 @foreach($auditors as $user)
-                                <option value="{{ $user->id }}">{{ sprintf("%s %s", $user->firstname ?? '', $user->surname ?? '') }}</option>
+                                    <option value="{{ $user->id }}">{{ sprintf("%s %s", $user->firstname ?? '', $user->surname ?? '') }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-     <div class="modal-footer">
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-success btn-add-process"><i class="fa fa-plus"></i> Add</button>
                         <button type="button" class="btn btn-close-modal btn-secondary" data-bs-dismiss="modal">Close</button>
-     </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -161,11 +152,17 @@
     var tree = $('.tree').treeview({
         data: areas,
         levels: 1,
+        multiSelect: true,
         collapseIcon: "fa fa-minus",
         expandIcon: "fa fa-plus",
         onNodeSelected: function(event, data) {
-            $('.process').val(data.id);
-            $('.process_name').val(data.text);
+            var processName = data.text;
+            var unselectedNodes = tree.treeview('getUnselected');
+            unselectedNodes.forEach(element => {
+                if(processName == element.text) {
+                    tree.treeview('selectNode', [ element.nodeId, { silent: true } ]);
+                }
+            });
         }
     });
 
@@ -187,28 +184,42 @@
     });
 
     $('.btn-add-process').on('click', function(){
-        var process_name = $('.process_name').val();
-        var process_id = $('.process').val();
-        
         var auditors_name = '';
         var auditors_id = '';
         $('#auditors option:selected').each(function(i, val){
             auditors_name += val.text;
-            auditors_id  += val.value;
+            auditors_id += val.value;
             if(i <  ($('#auditors option:selected').length -1)) {
                 auditors_name += ', ';
                 auditors_id += ',';
             }
         });
+
+        var selected = tree.treeview('getSelected');
+        var area_names = '';
+        var area_ids = '';
+        var i = 0;
+        selected.forEach(function(area) {
+            var parent = tree.treeview('getNode', area.parentId);
+            area_names += parent.text + ` > ` + area.text;
+            area_ids += area.id;
+            if(i < selected.length - 1) {
+                area_names += ', ';
+                area_ids += ',';
+                i++;
+            }
+        });
+
         $('.table-process tbody').append(`<tr>
-                    <td>` + process_name + `</td>
-                    <td>` + auditors_name + `</td>
-                    <td>
-                        <button class="btn btn-danger btn-remove" type="button"><i class="fa fa-times"></i></button>
-                        <input type="hidden" name="process[]" value="` + process_id + `">
-                        <input type="hidden" name="auditors[]" value="` + auditors_id + `">
-                    </td>
-            </tr>`);
+                <td>` + area_names + `</td>
+                <td>` + auditors_name + `</td>
+                <td>
+                    <button class="btn btn-danger btn-remove" type="button"><i class="fa fa-times"></i></button>
+                    <input type="hidden" name="area_names[]" value="` + area_names + `">
+                    <input type="hidden" name="process[]" value="` + area_ids + `">
+                    <input type="hidden" name="auditors[]" value="` + auditors_id + `">
+                </td>
+        </tr>`);
 
         $('.btn-close-modal').trigger('click');
     });

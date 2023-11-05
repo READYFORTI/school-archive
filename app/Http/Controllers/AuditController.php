@@ -40,10 +40,10 @@ class AuditController extends Controller
 
         if($user->role->role_name == 'Internal Lead Auditor') {
             $auditors = User::whereHas('role', function($q) { $q->where('role_name', 'Internal Auditor'); })->get();
-            $audit_plans = AuditPlan::get();
+            $audit_plans = AuditPlan::latest()->get();
         }else{
             $auditors = [];
-            $audit_plans = AuditPlan::whereHas('users', function($q) { $q->where('user_id', Auth::user()->id); })->get();
+            $audit_plans = AuditPlan::whereHas('users', function($q) { $q->where('user_id', Auth::user()->id); })->latest()->get();
         }
         
         return view('audits.index', compact('audit_plans', 'auditors'));
@@ -81,9 +81,10 @@ class AuditController extends Controller
     {
         $audit_plan = AuditPlan::latest()->firstOrFail();
         $auditors = User::whereHas('role', function($q) { $q->where('role_name', 'Internal Auditor'); })->get();
+        $batches = AuditPlanBatch::where('audit_plan_id', $audit_plan->id)->get();
         $tree_areas = $this->dr->getAreaFamilyTree(null, 'process');
         $selected_users = $audit_plan->users->pluck('user_id')->toArray();
-        return view('audits.previous', compact('tree_areas', 'auditors', 'audit_plan', 'selected_users'));
+        return view('audits.previous', compact('tree_areas', 'auditors', 'audit_plan', 'batches'));
     }
 
     public function editAuditPlan($id)
@@ -93,19 +94,19 @@ class AuditController extends Controller
                         ->whereHas('audit_plan_area_user', function($q) use($audit_plan){
                             $q->where('audit_plan_id', $audit_plan->id);
                         })->with('audit_plan_area_user')->get();
+        
+        $batches = AuditPlanBatch::where('audit_plan_id', $audit_plan->id)->get();
 
-        foreach($auditors as $auditor) {
-            foreach($auditor->audit_plan_area_user as $plan_area) {
-                $plan_area->audit_report = AuditReport::where('audit_plan_id', $audit_plan->id)
-                    ->where('area_id', $plan_area->audit_plan_area->area_id)
-                    ->where('user_id', $auditor->id)->first() ?? null;
-                $plan_area->cars = Car::whereHas('audit_report', function($q) use($audit_plan, $plan_area) {
-                        $q->where('audit_plan_id', $audit_plan->id)
-                        ->where('area_id', $plan_area->audit_plan_area->area_id);
-                    })->where('user_id', $auditor->id)->first() ?? null;
-            }
+        foreach($batches as $batch) {
+            $batch->audit_report = AuditReport::where('audit_plan_id', $audit_plan->id)
+                ->where('audit_plan_batch_id', $batch->id)
+                ->exists() ?? null;
+            $batch->cars = Car::whereHas('audit_report', function($q) use($audit_plan, $batch) {
+                    $q->where('audit_plan_id', $audit_plan->id)
+                    ->where('audit_plan_batch_id', $batch->id);
+                })->exists() ?? null;
         }
-        return view('audits.edit', compact('auditors', 'audit_plan'));
+        return view('audits.edit', compact('auditors', 'audit_plan', 'batches'));
     }
 
     public function saveAuditPlan(Request $request, $id = null)
@@ -122,7 +123,7 @@ class AuditController extends Controller
             }
 
             if(empty($audit_plan->directory_id)) {
-                $parent_directory = Directory::where('name', 'Audit Reports')->whereNull('parent_id')->firstOrFail();
+                $parent_directory = $this->dr->getDirectory('Audit Reports');
                 $dir = $this->dr->getDirectory($request->name, $parent_directory->id);
                 $audit_plan->directory_id = $dir->id;
             }
@@ -143,7 +144,8 @@ class AuditController extends Controller
                     'audit_plan_id' => $audit_plan->id
                 ]);
 
-                $areas = explode(',',$request->process[$key]);
+                $areas = explode(',', $request->process[$key]);
+                
                 foreach($areas as $process_area) {
                     $area = Area::findOrFail($process_area);
                     $audit_plan_area = AuditPlanArea::firstOrcreate([
@@ -210,13 +212,12 @@ class AuditController extends Controller
     public function createAuditReport()
     {
         $audit_plans = AuditPlan::whereHas('users', function($q) {
-                            $q->where('user_id', Auth::user()->id); 
-                        })->with('plan_areas', function($q) {
-                            $q->whereHas('area_users', function($q2) {
-                                $q2->where('user_id', Auth::user()->id); 
-                            });
-                        })
-                        ->get();
+                    $q->where('user_id', Auth::user()->id); 
+                })->with('batches', function($q) {
+                    $q->whereHas('batch_users', function($q2) {
+                        $q2->where('user_id', Auth::user()->id); 
+                    });
+                })->get();
                         
         return view('audit-reports.create', compact('audit_plans'));
     }
@@ -227,9 +228,9 @@ class AuditController extends Controller
         
         $audit_plan = AuditPlan::findOrFail($request->audit_plan);
         $dir = Directory::findOrFail($audit_plan->directory_id);
-        $process = Area::findOrFail($request->process);
+        $process = AuditPlanBatch::findOrFail($request->process);
 
-        $directory = $this->dr->makeAreaRootDirectories($process, $dir->id);
+        $directory = $this->dr->getDirectory($process->area_names(), $dir->id);
         $year = Carbon::parse($request->date)->format('Y');
         $directory = $this->dr->getDirectory($year, $directory->id);
 
@@ -245,16 +246,40 @@ class AuditController extends Controller
             $file_id = $file->id;
         }
 
-        AuditReport::create([
+        $audit_report = AuditReport::create([
             'name' => $request->name,
             'description' => $request->description,
             'user_id' => $user->id,
             'audit_plan_id' => $audit_plan->id,
-            'area_id' => $request->process,
+            'audit_plan_batch_id' => $request->process,
             'directory_id' => $directory->id,
             'date' => $request->date,
             'file_id' => $file_id
         ]);
+
+        if($request->has('with_cars')) {
+            $file_id = null;
+            if ($request->hasFile('cars_file_attachments')) {
+                $file = $this->dr->storeFile(
+                            $request->cars_name, 
+                            $request->cars_description, 
+                            $request->file('cars_file_attachments'), 
+                            null, // No directory for CARS
+                            'cars'
+                );
+                $file_id = $file->id;
+            }
+    
+            Car::create([
+                'name' => $request->cars_name,
+                'audit_report_id' => $audit_report->id,
+                'description' => $request->cars_description,
+                'user_id' => $user->id,
+                'date' => $request->cars_date,
+                'file_id' => $file_id
+            ]);
+        }
+        
 
         $users = User::whereHas('role', function($q){ $q->whereIn('role_name', \FileRoles::AUDIT_REPORTS); })->get();
         \Notification::notify($users, 'Submitted Audit Report', route('archives-show-file', $file_id));

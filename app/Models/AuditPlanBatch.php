@@ -10,6 +10,8 @@ class AuditPlanBatch extends Model
     use HasFactory;
     
     protected $guarded = [];
+    
+    protected $appends = ['area_names'];
 
     public function users()
     {
@@ -21,6 +23,10 @@ class AuditPlanBatch extends Model
             'id',
             'user_id'
         );
+    }
+
+    public function batch_users() {
+        return $this->hasMany(AuditPlanAreaUser::class);
     }
 
     public function areas()
@@ -51,5 +57,10 @@ class AuditPlanBatch extends Model
             $names[] = $user->firstname .' '. $user->surname;
         }
         return implode(', ', $names);
+    }
+
+    public function getAreaNamesAttribute()
+    {
+        return $this->area_names();
     }
 }
