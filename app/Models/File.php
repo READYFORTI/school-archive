@@ -17,6 +17,19 @@ class File extends Model
 
     protected $appends = ['shared_users'];
 
+    protected static function booted () {
+        static::deleting(function(File $file) {
+             $file->file_users()->delete();
+             $file->survey_report()->delete();
+             $file->cons_audit_report()->delete();
+             $file->histories()->delete();
+             $file->remarks()->delete();
+             $file->audit_report()->delete();
+             $file->manual()->delete();
+             $file->items()->delete();
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class)->withTrashed();

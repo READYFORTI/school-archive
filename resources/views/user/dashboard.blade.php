@@ -3,13 +3,12 @@
 <title>Dashboard</title>
 @endsection
 @section('page')
-    <div class="page-header">
-        <h2>Dashboard</h2>
-    </div>
-    {{-- <div class="container mt-3"> --}}
-        <div class="m-3">
-        <div class="row">
-            <div class="col-8">
+    <div class="row">
+        <div class="col-8">
+            <div class="page-header">
+                <h2>Dashboard</h2>
+            </div>
+            <div class="m-3">
                 <div class="row">
                     
                     @if(in_array(auth()->user()->role->role_name, ['Quality Assurance Director', 'Administrator']))
@@ -290,9 +289,6 @@
                             </div>
                         </a>
                     </div>
-                    
-
-
                 </div>
                 <div class="row mt-2">
                     <div class="col-12 px-2">
@@ -324,63 +320,63 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
-                <div class="col-12">
-                    <div class="row">
-                        <div class="card text-center">
-                            <div class="calendar"></div>
-                        </div>
+        </div>  
+        <div class="col-4">
+            <div class="col-12">
+                <div class="row">
+                    <div class="card text-center">
+                        <div class="calendar"></div>
                     </div>
-                    {{-- <div class="row mt-2">
-                        <div class="card p-3 text-center">
-                            <div class="card-body">
-                                <h4>{{ in_array($user_type, ['Administrators', 'Human Resources', 'Quality Assurance Director']) ? 'All Users' : $user_type }}</h4>
-                                <div style="max-height:400px; overflow-y:scroll">
-                                    <table class="table">
-                                    @foreach($users as $user)
-                                        <tr>
-                                            <td class="text-center">
-                                                <img src="{{ Storage::url($user->img) }}" onerror="this.src='/storage/assets/dnsc-logo.png'" style="border-radius:50%" width="60px" height="50px" alt="User Image">
-                                            </td>
-                                            <td>   
-                                                <strong class="px-0"><small>{{ $user->firstname }} {{ $user->surname }}</small></strong><br/>
-                                                ({{ $user->username }})
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
-                    <div class="row mt-2">
-                        <div class="card p-3 text-center">
-                            <div class="card-body">
-                                <h4 class="mb-4">{{ in_array($user_type, ['Administrators', 'Human Resources', 'Quality Assurance Director']) ? 'All Users' : $user_type }}</h4>
-                                <div class="d-flex flex-wrap justify-content-center align-items-start" style="max-height: 400px; overflow-y: auto;">
-                                    @foreach($users as $user)
-                                    <div class="user-card card mx-2 my-2 d-flex align-items-center justify-content-center">
-                                        <img class="user-image card-img-top" src="{{ Storage::url($user->img) }}" onerror="this.src='/storage/assets/dnsc-logo.png'" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;"alt="User Image">
-                                        <div class="card-body p-2">
-                                            <h6 class="card-title user-name">{{ $user->firstname }} {{ $user->surname }}</h6>
-                                            {{-- <p class="card-text user-username">{{ $user->username }}</p> --}}
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                   
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                 </div>
+                {{-- <div class="row mt-2">
+                    <div class="card p-3 text-center">
+                        <div class="card-body">
+                            <h4>{{ in_array($user_type, ['Administrators', 'Human Resources', 'Quality Assurance Director']) ? 'All Users' : $user_type }}</h4>
+                            <div style="max-height:400px; overflow-y:scroll">
+                                <table class="table">
+                                @foreach($users as $user)
+                                    <tr>
+                                        <td class="text-center">
+                                            <img src="{{ Storage::url($user->img) }}" onerror="this.src='/storage/assets/dnsc-logo.png'" style="border-radius:50%" width="60px" height="50px" alt="User Image">
+                                        </td>
+                                        <td>   
+                                            <strong class="px-0"><small>{{ $user->firstname }} {{ $user->surname }}</small></strong><br/>
+                                            ({{ $user->username }})
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div> --}}
+                <div class="row mt-2">
+                    <div class="card p-3 text-center">
+                        <div class="card-body">
+                            <h4 class="mb-4">{{ in_array($user_type, ['Administrators', 'Human Resources', 'Quality Assurance Director']) ? 'All Users' : $user_type }}</h4>
+                            <div class="d-flex flex-wrap justify-content-center align-items-start" style="max-height: 400px; overflow-y: auto;">
+                                @foreach($users as $user)
+                                <div class="user-card card mx-2 my-2 d-flex align-items-center justify-content-center">
+                                    <img class="user-image card-img-top" src="{{ Storage::url($user->img) }}" onerror="this.src='/storage/assets/dnsc-logo.png'" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;"alt="User Image">
+                                    <div class="card-body p-2">
+                                        <h6 class="card-title user-name">{{ $user->firstname }} {{ $user->surname }}</h6>
+                                        {{-- <p class="card-text user-username">{{ $user->username }}</p> --}}
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            
+                
+                
+                
+                
+                
+                
+                
             </div>
         </div>
     </div>

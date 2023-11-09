@@ -81,6 +81,8 @@
         </div>
       </div>
 
+      
+      @if(auth()->user()->role->role_name == 'Internal Lead Auditor')
       <div class="col-lg-3">
         <div class="m-3 bg-white py-2">
             <button class="btn btn text-success" type="button" data-toggle="collapse" data-target="#internal-auditors" aria-expanded="true" aria-controls="internal-auditors" style="border: none; box-shadow: none;">
@@ -113,6 +115,7 @@
             
         </div>
       </div>
+      @endif
     </div>
 </div>
 
