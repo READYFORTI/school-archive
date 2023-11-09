@@ -19,12 +19,14 @@
     <div class="page-header">
         <h2>{{ $title }}</h2>
     </div>
+    @if(auth()->user()->role->role_name == 'Internal Lead Auditor')
     <div class="text-end  mr-3 p-3">
       <small><a href="{{ route('lead-auditor.audit.create') }}" class="btn btn-success"><i class="fa fa-plus"></i> New Plan</a></small>
       @if(!empty($audit_plans) && count($audit_plans) > 0)
       <small><a href="{{ route('lead-auditor.audit.previous') }}" class="btn btn-warning "><i class="fa fa-edit"></i> Previous Plan</a></small>
       @endif
     </div>
+    @endif
     
         
         
