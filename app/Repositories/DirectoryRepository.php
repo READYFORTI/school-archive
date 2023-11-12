@@ -232,6 +232,20 @@ class DirectoryRepository {
         return $directories;
     }
 
+    public function getChildDirectories($directory)
+    {
+        $directories = [];
+        if(!empty($directory->children)) {
+            foreach($directory->children as $child) {
+                $directories = array_merge($directories, [$child]);
+                if(!empty($child->children)) {
+                    $directories = array_merge($directories, $this->getChildDirectories($child));
+                }
+            }
+        }
+        return $directories;
+    }
+
     public function getRootDirectories($directory)
     {
         $directories = [];

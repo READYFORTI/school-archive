@@ -329,9 +329,6 @@ class ArchiveController extends Controller
         }
 
         $directory = $file->directory_id;
-        $file->items()->delete();
-        $file->histories()->delete();
-        $file->delete();
 
         $url = url()->previous();
         $route = app('router')->getRoutes($url)->match(app('request')->create($url))->getName();

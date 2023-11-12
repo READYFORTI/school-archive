@@ -183,6 +183,7 @@ class AuditController extends Controller
     public function deleteAuditPlan($id)
     {
         $audit_plan = AuditPlan::findOrFail($id);
+
         $audit_area_users = AuditPlanAreaUser::where('audit_plan_id', $id)->get();
         foreach($audit_area_users as $audit_area_user) {
             $area_user = AreaUser::where('area_id', $audit_area_user->audit_plan_area->area_id)
@@ -192,8 +193,25 @@ class AuditController extends Controller
             }
             $audit_area_user->delete();
         }
+        Car::whereHas('audit_report', function($q) use($id) {
+            $q->where('audit_plan_id', $id);
+        })->delete();
+        AuditReport::where('audit_plan_id', $id)->delete();
         AuditPlanArea::where('audit_plan_id', $id)->delete();
         AuditPlanBatch::where('audit_plan_id', $audit_plan->id)->delete();
+
+
+        
+        // Delete Folder and Files
+        $directory = Directory::where('id', $audit_plan->directory_id)->first();
+        $child_directories = $this->dr->getChildDirectories($directory);
+        $directories = array_merge([$directory], $child_directories);
+
+        foreach($directories as $directory) {
+            File::where('directory_id', $directory->id)->delete();
+            $directory->delete();
+        }
+
         $audit_plan->delete();
         
         return redirect()->route('lead-auditor.audit.index')->withMessage('Audit plan deleted successfully');
