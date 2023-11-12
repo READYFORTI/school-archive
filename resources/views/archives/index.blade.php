@@ -3,35 +3,32 @@
 <title>{{ $page_title ?? 'Archives' }}</title>
 @endsection
 @section('page')
-    <div class="page-header">
-        <h1>{{ $page_title ?? 'Archives' }}</h1>
-        <h5 class="text-decoration-none">
-            @if(empty($page_title) || $page_title == 'Archives')
-                @if(!empty($parents))
-                    <a href="{{ route('archives-page') }}">Archives</a> >
-                @endif
-            @endif
+    <h5 class="text-decoration-none d-none">
+        @if(empty($page_title) || $page_title == 'Archives')
             @if(!empty($parents))
-                @foreach($parents as $parent) 
-                    @if(!$loop->last)
-                        <a href="{{ route($route ?? 'archives-page') }}?directory={{ $parent['id'] }}">{{ $parent['name'] }}</a> >
-                    @else
-                        {{ $parent['name'] }}
-                    @endif
-                @endforeach
+                <a href="{{ route('archives-page') }}">Archives</a> >
             @endif
-        </h5>
-    </div>
+        @endif
+        @if(!empty($parents))
+            @foreach($parents as $parent) 
+                @if(!$loop->last)
+                    <a href="{{ route($route ?? 'archives-page') }}?directory={{ $parent['id'] }}">{{ $parent['name'] }}</a> >
+                @else
+                    {{ $parent['name'] }}
+                @endif
+            @endforeach
+        @endif
+    </h5>
     {{-- <div class="container"> --}}
     <div class="m-3">
-        <div style="text-align:right">
+        <div class="mb-3" style="text-align:right">
             @if(Auth::user()->role->role_name == Roles::PROCESS_OWNER 
                 && $page_title == 'Manuals' 
                 && !empty($current_directory->area) && $current_directory->area->type == 'process'
             )   
                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#manualsModal"><i class="fa fa-book"></i> Upload Manual</button>
             @endif
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fa fa-search"></i> Search</button>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fa fa-search"></i> Search</button>
             @if(
                     (in_array(Auth::user()->role->role_name, [Roles::DOCUMENT_CONTROL_CUSTODIAN, Roles::PROCESS_OWNER])
                         && !empty($current_directory)

@@ -8,7 +8,7 @@
         data-toggle="tooltip" title="{{ $file->directory->fullPath() ?? '' }} > {{ $file->file_name ?? '' }}" 
         class="btn btn-file align-items-center justify-content-center pb-0" data-bs-toggle="dropdown" 
         aria-expanded="false" data-route="{{ route('archives-show-file', $file->id) }}">
-            <img src="{{ Storage::url('assets/file-white.png') }}" alt="filewhite.png" class="img-fluid">
+            <img src="{{ Storage::url('assets/file.png') }}" alt="filewhite.png" class="img-fluid">
             <p class="text-black mb-0" style="text-overflow: ellipsis"><small>{{ $file->file_name ?? '' }}</small></p>
     </button>
 

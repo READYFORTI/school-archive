@@ -19,4 +19,4 @@
           <a class="dropdown-item {{ request()->routeIs('hr.survey_report.index') ? 'active' : '' }}" href="{{ route('hr.survey_report.index') }}"><span>Survey Reports</span></a>
       </div>
 </li>
-<li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->route('archives*') ? 'active' : '' }}" href="{{ route('archives-page') }}"><i class="fas fa-archive mx-3 fa-lg"></i><span class="text-nowrap mx-2">Archive</span></a></li>
+<li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->is('archives*') ? 'active' : '' }}" href="{{ route('archives-page') }}"><i class="fas fa-archive mx-3 fa-lg"></i><span class="text-nowrap mx-2">Archive</span></a></li>

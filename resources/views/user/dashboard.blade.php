@@ -3,14 +3,10 @@
 <title>Dashboard</title>
 @endsection
 @section('page')
-    <div class="row">
+    <div class="col-12 row">
         <div class="col-8">
-            <div class="page-header">
-                <h2>Dashboard</h2>
-            </div>
             <div class="m-3">
                 <div class="row">
-                    
                     @if(in_array(auth()->user()->role->role_name, ['Quality Assurance Director', 'Administrator']))
                         <div class="col-lg-4 col-md-6 col-sm-12">
                             <a href="{{ route('admin-area-page') }}" class="text-success">
@@ -297,7 +293,7 @@
                                 <h4 class="text-success">
                                     Announcements
                                     @if(in_array(auth()->user()->role->role_name, ['Administrators', 'Quality Assurance Director']))
-                                        <a class="btn btn-success" style="float:right" href="{{ route('admin-announcement-create') }}"><span>Create Announcement</span></a>
+                                        <a class="btn btn-success" style="float:right" href="{{ route('admin-announcement-create') }}" target="_blank"><span>Create Announcement</span></a>
                                     @endif
                                 </h4>
                                 <table class="table datatables">
@@ -321,10 +317,10 @@
                 </div>
             </div>
         </div>  
-        <div class="col-4">
+        <div class="col-4 p-3">
             <div class="col-12">
                 <div class="row">
-                    <div class="card text-center">
+                    <div class="card text-center pb-2">
                         <div class="calendar"></div>
                     </div>
                 </div>
@@ -384,8 +380,24 @@
 
 @section('js')
 <script>
+    var event_dates = {!! json_encode($announcements->pluck('date')) !!};
+
     $(".calendar").flatpickr({
-        inline: true
+        inline: true,
+        onDayCreate: function(dObj, dStr, fp, dayElem) {
+            // Utilize dayElem.dateObj, which is the corresponding Date
+
+            var y = dayElem.dateObj.getFullYear().toString(); // get full year
+            var m = (dayElem.dateObj.getMonth() + 1).toString(); // get month.
+            var d = dayElem.dateObj.getDate().toString(); // get Day
+            if(m.length == 1){ m = '0' + m; } // append zero(0) if single digit
+            if(d.length == 1){ d = '0' + d; } // append zero(0) if single digit
+
+            var currDate = y+'-'+m+'-'+d;
+            if(event_dates.indexOf(currDate) >= 0){
+                $(dayElem).addClass('bg-success text-white');
+            }
+        }
     });
 </script>
 @endsection

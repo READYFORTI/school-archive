@@ -4,7 +4,7 @@
         class="btn align-items-center justify-content-center btn-directory" 
         data-bs-toggle="dropdown" aria-expanded="false" 
         data-route="{{ route($route ?? 'archives-page') }}?directory={{ $directory->id }}" style="border:none">
-            <img src="{{ Storage::url('assets/folder.png') }}" alt="Folder.png" class="img-fluid">
+            <img src="{{ Storage::url('assets/folder-green.png') }}" alt="Folder.png" class="img-fluid">
             {{-- <p class="text-black" style="text-overflow: ellipsis"><small>{{ $directory->name ?? '' }}</small></p> --}}
             <p class="text-black" style="text-overflow: ellipsis">{{ $directory->name ?? '' }}</p>
     </button>

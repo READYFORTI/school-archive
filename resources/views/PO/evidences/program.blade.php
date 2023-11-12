@@ -9,7 +9,7 @@
         height: 123px;
         background-repeat: no-repeat;
         background-position: center;
-        background-image: url("{{ Storage::url('assets/folder.png') }}");
+        background-image: url("{{ Storage::url('assets/folder-green.png') }}");
         color: #ffffff;
     }
     .folder:hover{

@@ -4,11 +4,6 @@
 @endsection
 @section('css-page')
     <style>
-        .btn-design {
-            border: 1px solid #000000 !important;
-            font-size: 1em !important;
-        }
-
         .btn-design:hover{
             color: #ffffff !important;
             background-color: #005b40 !important;
@@ -26,8 +21,8 @@
     </style>
 @endsection
 @section('page')
-    <div class="page-header pb-2 px-3">
-        <h1>Areas</h1>
+    <div class="mt-3 px-3">
+        <!-- <h1>Areas</h1> -->
         <div class="row">
             <div class="col-8">
                 @foreach ($main_areas as $row)
@@ -53,6 +48,7 @@
             </div>
         </div>
     </div>
+    <hr width="100%">
 
     {{-- Transaction Messages --}}
     <div style="min-height: 20vh">
@@ -140,13 +136,13 @@
                 if (child_areas.length > 0) 
                 {
                     var type = area.area_name == 'Administration' ? 'Offices' : 'Institute';
-                    area_container.html('<h2 class="my-3 text-white">' + type + '</h2>');
+                    // area_container.html('<h2 class="my-3 text-white">' + type + '</h2>');
 
                     child_areas.forEach(function (i) {
                         area_container.append(`
                         <div class="col-md-2 col-sm-4 col-6 mb-4 text-center" > <!-- Adjust the column widths based on your requirements -->
                             <button class="pt-3 btn align-items-center justify-content-center btn-sub-area" data-area-id="` + i.id + `" data-bs-toggle="dropdown" aria-expanded="false" style="border: none">
-                            <i class="fa fa-building fa-4x text-warning"></i> <!-- Increased the icon size to 3x -->
+                            <i class="fa fa-building fa-4x text-success"></i> <!-- Increased the icon size to 3x -->
                             <p style="text-overflow: ellipsis; font-size: 14px;"><small>` + i.area_name + `</small></p> <!-- Increased the font size to 14px -->
                             </button>
                             <ul class="dropdown-menu text-left">
@@ -180,7 +176,7 @@
                     program_areas.forEach(function(i){
                         program_container.append(`<div class="col-2 text-center">
                             <button class="pt-3 btn align-items-center justify-content-center btn-sub-area" data-area-id="` + i.id + `" data-bs-toggle="dropdown" aria-expanded="false" style="border: none">
-                                <i class="fa fa fa-book fa-2x text-warning"></i>
+                                <i class="fa fa fa-book fa-2x text-success"></i>
                                 <p style="text-overflow: ellipsis"><small>` + i.area_name + `</small></p>
                             </button>
                             <ul class="dropdown-menu text-left">
@@ -197,7 +193,7 @@
                     process_areas.forEach(function(i){
                         process_container.append(`<div class="col-2 text-center">
                             <button class="pt-3 btn align-items-center justify-content-center btn-sub-area" data-area-id="` + i.id + `" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa fa-book fa-2x text-warning"></i>
+                                <i class="fa fa fa-book fa-2x text-success"></i>
                                 <p style="text-overflow: ellipsis"><small>` + i.area_name + `</small></p>
                             </button>
                             <ul class="dropdown-menu text-left">
@@ -226,7 +222,7 @@
                     process_areas.forEach(function(i){
                         process_container.append(`<div class="col-2 text-center">
                             <button class="pt-3 btn align-items-center justify-content-center btn-sub-area" data-area-id="` + i.id + `" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa fa-book fa-2x text-warning"></i>
+                                <i class="fa fa fa-book fa-2x text-success"></i>
                                 <p style="text-overflow: ellipsis"><small>` + i.area_name + `</small></p>
                             </button>
                             <ul class="dropdown-menu text-left">

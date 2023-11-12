@@ -13,7 +13,7 @@
                 @foreach($consolidated_audit_reports as $report)
                     <div class="col-2">
                         <div class="btn text-center align-items-center justify-content-center btn-directory" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ Storage::url('assets/file-white.png') }}" alt="Folder.png" class="img-fluid">
+                            <img src="{{ Storage::url('assets/file.png') }}" alt="Folder.png" class="img-fluid">
                             <p class="text-black" style="text-overflow: ellipsis"><small>{{ $report->name ?? '' }}</small></p>
                             
                             <a href="#" class="btn btn-sm btn-success btn-confirm" data-message="Are you sure you want to approve?" data-target="#approve_report_{{ $report->id }}">Approve</button>
