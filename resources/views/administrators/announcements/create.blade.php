@@ -6,8 +6,8 @@
     <div class="page-header">
         <h2>Add Annoucement</h2>
     </div>
-    <div class="container">
-        <div class="row mt-3 px-2">
+    <div class="m-3 bg-white py-4">
+        <div class="row mt-3 px-2 m-3">
             @include('layout.alert')
             <form method="POST" action="{{ route('admin-announcement-store') }}">
                 @csrf
@@ -23,10 +23,11 @@
                         <label for="search" class="form-label">Description:</label>
                         <textarea name="description" class="form-control" rows="3"></textarea>
                     </div>
-                </div>
-                <div style="text-align: right" class="pb-3">
+                    <div style="text-align: right" class="pb-3">
                     <button type="submit" class="btn btn-success">Submit</button>
                 </div>
+                </div>
+                
             </form>
         </div>
     </div>
