@@ -3,6 +3,9 @@
 <title>Dashboard</title>
 @endsection
 @section('page')
+<div class="page-header">
+    <h2>Dashboard</h2>
+</div>
     <div class="col-12 row">
         <div class="col-8">
             <div class="m-3">

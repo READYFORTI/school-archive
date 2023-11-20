@@ -3,7 +3,9 @@
 <title>{{ $page_title ?? 'Archives' }}</title>
 @endsection
 @section('page')
-    <h5 class="text-decoration-none d-none">
+<div class="page-header">
+    <h1>{{ $page_title ?? 'Archives' }}</h1>
+    <h5 class="text-decoration-none">
         @if(empty($page_title) || $page_title == 'Archives')
             @if(!empty($parents))
                 <a href="{{ route('archives-page') }}">Archives</a> >
@@ -19,6 +21,7 @@
             @endforeach
         @endif
     </h5>
+</div>
     {{-- <div class="container"> --}}
     <div class="m-3">
         <div class="mb-3" style="text-align:right">
