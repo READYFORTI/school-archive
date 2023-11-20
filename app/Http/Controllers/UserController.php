@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 
+
 class UserController extends Controller
 {
     public function dashboard()
@@ -84,6 +85,131 @@ class UserController extends Controller
 
         return redirect()->route('login-page')->with('success', 'Account has been registered successfully');
     }
+
+        public function update(Request $request, $id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+
+        $originalData = $user->toArray(); // Get the original user data
+
+        $validatedData = $request->validate([
+            'firstname' => ['required', 'max:255'],
+            'middlename' => ['nullable', 'max:255'],
+            'surname' => ['required', 'max:255'],
+            'suffix' => ['nullable', 'max:255'],
+            'username' => ['required', 'max:255', 'unique:users,username,' . $id],
+            'password' => ['nullable', 'confirmed', 'max:255'],
+            'img' => ['nullable', 'image', 'max:10000'],
+        ]);
+
+        // Check if a new password is provided in the request
+        if ($request->filled('password')) {
+            $validatedData['password'] = Hash::make($validatedData['password']);
+        } else {
+            unset($validatedData['password']);
+        }
+
+        $user->update($validatedData);
+
+        // Calculate the difference between two arrays
+        $dataDiff = array_diff_assoc($validatedData, $originalData);
+
+        // Check if there are any differences
+        if (!empty($dataDiff)) {
+            // Data has been updated
+            $message = 'Updated Successfully';
+        } else {
+            // No data changes
+            $message = 'No data changes were made';
+        }
+
+        // Handle image upload separately, similar to the previous example
+        $imgPath = $this->handleImageUpload($request);
+
+        if ($imgPath) {
+            $user->img = $imgPath;
+            $user->save();
+        }
+
+        return redirect()->route('users.update', $user->id)->with('success', $message);
+    }
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+    
+   
+    
+
+
+    public function handleImageUpload(Request $request)
+{
+    if ($request->hasFile('img')) {
+        $file = $request->file('img');
+        $fileName = Uuid::uuid4()->toString() . '.' . $file->extension();
+        $filePath = $file->storeAs('public/profiles', $fileName);
+        return $filePath;
+    }
+    
+    return null; // No file was uploaded
+}
+
+
+
+    public function show($id)
+{
+    // Retrieve the user by ID from the database
+    $user = User::find($id);
+
+    // Check if the user was found
+    if (!$user) {
+        return redirect()->route('login-page')->with('error', 'User not found');
+    }
+
+    // If the user was found, return a view with the user's details
+    return view('user.show', compact('user'));
+}
+
+public function pshow($id)
+{
+    // Retrieve the user by ID from the database
+    $user = User::find($id);
+
+    // Check if the user was found
+    if (!$user) {
+        return redirect()->route('login-page')->with('error', 'User not found');
+    }
+
+    // If the user was found, return a view with the user's details
+    return view('user.pshow', compact('user'));
+}
+
+
+
+
+
+
 
     public function profile()
     {

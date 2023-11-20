@@ -65,6 +65,9 @@ Route::middleware(['guest'])->group(function(){
 
 Route::middleware(['auth'])->group(function(){
     Route::get('/unassigned',[AuthController::class,'unassigned'])->name('unassigned');
+
+    
+
     
     Route::get('/dashboard',[UserController::class,'dashboard'])->name('user.dashboard');
     Route::get('/profile',[UserController::class, 'profile'])->name('user.profile');
@@ -320,4 +323,13 @@ Route::middleware(['auth'])->group(function(){
 
 Route::resources([
     'users'=>UserController::class
+    
 ]);
+Route::put('/users/{id}', 'UserController@update')->name('users.update');
+Route::get('/users/{id}', 'UserController@show')->name('users.phow');
+
+
+
+    
+
+
