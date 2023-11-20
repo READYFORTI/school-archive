@@ -1,7 +1,303 @@
 @extends('layout.app')
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+<style>
+    body {   
+        background: url('{{ asset("/media/awts.jpg") }}') no-repeat center center fixed; 
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+
+    .container {
+        background: rgb(15 15 15 / 40%);
+        padding-top: 30px;
+        padding-right: 30px;
+        padding: 30px;
+        margin-left: 18px !important;
+        width: 100%;
+        max-width: 98%;
+        border-radius: 20px;
+        margin-top: 20px;
+        color: #ffff;
+    }
+
+    @media (min-width: 992px) {
+        body {
+            padding-left: 14rem;
+        }
+    }
+
+    .drop-menu .active{
+        background-color: #ffffff !important;
+    }
+
+    .drop-menu .active span{
+        color: #005b40 !important;
+    }
+
+    /* Sidebar Styles */
+    
+
+    .sidebar {
+    max-width: 14rem !important;
+    width: 100%;
+    min-height: 100vh;
+    background: #005b40; /* Set the background color to red */
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}
+
+
+    .sidebar .logo {
+        font-size: 1.6rem;
+    }
+
+    .sidebar .nav-link:hover,
+    .sidebar .nav-link.active {
+        background-color: #ffffff;
+        opacity: 1;
+        color: #005b40;
+    }
+
+    .sidebar .nav-link:hover,
+    .sidebar .nav-link.active span {
+        background-color: #ffffff;
+        opacity: 1;
+        color: #005b40;
+    }
+
+    .sidebar .nav-link span {
+        font-size: 1rem;
+        color: #ffffff;
+    }
+
+    .sidebar .nav-link:hover span {
+        font-size: 1rem;
+        color: #005b40;
+    }
+
+    .sidebar .dropdown-toggle:after {
+        display: none;
+    }
+
+    .sidebar .dropdown-menu {
+        position: relative !important;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        overflow: hidden;
+        transform: unset !important;
+        top: unset !important;
+        left: unset !important;
+        min-width: unset !important;
+        background-color: #0B6E4F;
+        border-radius: 0 !important;
+    }
+
+    .sidebar .dropdown-item {
+        padding: 0.8rem 0 0.8rem 1.5rem;
+        margin: 0;
+    }
+
+    .sidebar .dropdown-item:hover,
+    .sidebar .dropdown-item:active,
+    .dropdown-item:focus {
+        background-color: #005b40;
+    }
+
+    .sidebar .nav-link {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        font-size: 1rem;
+        position: relative;
+        opacity: 0.9;
+        color: #ffffff;
+    }
+
+    .sidebar .fas.fa-caret-down.float-none.float-lg-right.fa-sm {
+        position: absolute;
+        top: 50%;
+        right: 5%;
+        transform: translate(-50%, -50%);
+    }
+
+    .sidebar.collapsed .nav-item:not(.logo-holder) {
+        display: none !important;
+    }
+
+    @media (max-width: 991px) {
+        .sidebar.mobile-hid .nav-item {
+            display: none !important;
+        }
+    }
+
+    .sidebar.collapsed #sidebarToggleHolder {
+        position: absolute !important;
+        color: #ffffff !important;
+        left: 0;
+        top: 0;
+        padding: 10px;
+        z-index: 999;
+        margin-top: 3px;
+    }
+
+    @media (max-width: 991px) {
+        .sidebar.mobile-hid #sidebarToggleHolder {
+            position: absolute !important;
+            color: #858791 !important;
+            left: 0;
+            top: 0;
+            margin: 10px;
+            z-index: 999;
+        }
+    }
+
+    .sidebar.collapsed .logo #title {
+        display: none;
+    }
+
+    @media (max-width: 991px) {
+        .sidebar.mobile-hid .logo #title {
+            display: none;
+        }
+    }
+
+    .sidebar.collapsed #sidebarToggleHolder {
+        float: none !important;
+    }
+
+    @media (max-width: 991px) {
+        .sidebar.mobile-hid #sidebarToggleHolder {
+            float: none !important;
+        }
+    }
+
+    .sidebar.collapsed {
+        width: 0 !important;
+    }
+
+    @media (max-width: 991px) {
+        .sidebar.mobile-hid {
+            width: 0 !important;
+        }
+    }
+
+    .sidebar #sidebarToggleHolder {
+        font-size: 20px !important;
+        margin: 7px 5px;
+    }
+
+    .dropdown-item span {
+        color: #ffffff;
+    }
+
+    .dropdown-item:hover span {
+        color: #005b40;
+    }
+
+    .dropdown-item:hover {
+        background-color: #ffffff !important;
+        /*color: #ffffff;*/
+    }
+
+    .dropdown-menu .dropdown-item .active {
+        background-color: #ffffff !important;
+    }
+
+    #title {
+        color: #ffffff;
+    }
+    
+    .flatpickr-calendar {
+        box-shadow: none !important;
+    }
+
+    .tracking-container {
+        text-align:center;
+    }
+    .tracking-item {
+        position: relative;
+        min-width: 150px;
+        min-height: 50px;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .tracking-item .item-box {
+        height: 50px; 
+        width:100%;
+        padding: 2px 5px 2px 5px;
+        border: 2px solid black;
+        border-radius: 10px;
+    }
+    
+    .tracking-container .tracking-item:not(:last-child) {
+        margin-right: 17px;
+    }
+    .tracking-container .tracking-item:not(:last-child):before {
+        position: absolute;
+        content: '';
+        right: -50%;
+        margin-top: -8px;
+        width: 50%;
+        height: 50%;
+        border-bottom: 10px solid black;
+    }
+    a {
+        text-decoration: none;
+    }
+    .cars {
+        position: absolute;
+        margin-left: 120px;
+    }
+
+    .nav > .nav-item {
+        width: 100%;
+    }
+
+    .nav-container {
+        height: 100%;
+        width: 100%;
+        overflow-y: auto;
+    }
+    /* Scrollbar Styles */
+/* For Chrome, Safari, and Opera browsers */
+::-webkit-scrollbar {
+    width: 8px;
+    background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+/* For Firefox browser */
+::-moz-scrollbar {
+    width: 8px;
+    background-color: #f5f5f5;
+}
+
+::-moz-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+}
+
+::-moz-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+    
+</style>
 @endsection
 @section('content')
     <ul class="nav shadow d-flex sidebar mobile-hid">
@@ -65,7 +361,7 @@
 
 
 
-                            <button type="button" class="btn btn-sm text-warning position-relative m-2" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: 1px; border:none">
+                            <button type="button" class="btn btn-sm text-warning position-relative m-2" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style=" border:none">
                                 <i class="fa fa-fw fa-bell fa-2x" style="font-size: 25px"></i>
                                 @if(!empty(auth()->user()->unreadNotifications) && count(auth()->user()->unreadNotifications) > 0)
                                     <span class="fs-xs fw-semibold d-inline-block rounded-pill bg-danger text-white px-2 align-top position-absolute top-10 start-40 translate-middle" >{{ count(auth()->user()->unreadNotifications) }}</span>
