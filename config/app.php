@@ -143,7 +143,7 @@ return [
         // 'store'  => 'redis',
     ],
 
-    'manage_archive' => ['Administrator', 'Quality Assurance Director'],
+    'manage_archive' => ['Administrator', 'Quality Assurance Director', 'Staff'],
 
     'role_with_assigned_area' => ['Document Control Custodian', 'Process Owner'],
 

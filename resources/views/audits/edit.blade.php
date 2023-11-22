@@ -12,7 +12,7 @@
         <div class="row mt-3 px-2 pb-3 m-3">
             @include('layout.alert')
             <div class="col-12">
-                <button class="btn btn-danger btn-confirm px-2" style="float:right" data-message="Are you sure you wan't to delete this audit plan?" data-target="#delete_audit_plan"><i class="fa fa-trash"></i>  Delete Audit Plan</button>
+                <button class="btn btn-danger btn-confirm px-2 mb-3" style="float:right" data-message="Are you sure you wan't to delete this audit plan?" data-target="#delete_audit_plan"><i class="fa fa-trash"></i>  Delete Audit Plan</button>
                     <form id="delete_audit_plan" action="{{ route('lead-auditor.audit.delete', $audit_plan->id) }}" class="d-none" method="POST">
                         @csrf
                         @method('DELETE')
@@ -22,7 +22,6 @@
             <div class="col-12">
                 <div>
                     <div class="mb-3">
-                        <label for="process" class="form-label">Name</label><i class="text-danger"> *</i>
                         <input type="text" value="{{ $audit_plan->name ?? '' }}" class="form-control" id="name" name="name" placeholder="Enter name" readonly>
                     </div>
                     <div class="mb-3">
@@ -50,6 +49,9 @@
                                             <tr>
                                                 <td>Auditors</td>
                                                 <td>Process</td>
+                                                <td>Date</td>
+                                                <td>From</td>
+                                                <td>To</td>
                                                 <td>Submitted Cars</td>
                                                 <td>Submitted Audit Report</td>
                                             </tr>
@@ -59,6 +61,9 @@
                                                 <tr>
                                                     <td>👩🏻‍💻 {{ $batch->user_names() }}</td>
                                                     <td>{{ $batch->area_names() }}</td>
+                                                    <td>{{ $batch->date_scheduled }}</td>
+                                                    <td>{{ $batch->from_time }}</td>
+                                                    <td>{{ $batch->to_time }}</td>
                                                     <td>
                                                         @if($batch->cars)
                                                             <span class="text-success">YES</span>

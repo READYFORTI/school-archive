@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable()->constrained();
             $table->foreignId('audit_plan_id')->nullable()->constrained();
+            $table->date('date_scheduled');
+            $table->time('from_time');
+            $table->time('to_time');
             $table->timestamps();
         });
     }

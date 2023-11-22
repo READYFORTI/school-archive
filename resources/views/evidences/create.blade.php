@@ -9,16 +9,12 @@
     <div class="m-3 bg-white py-4">
         <div class="m-3">
             @include('layout.alert')
-            <form method="POST" action="{{ route('po.evidence.store') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ Auth::user()->role->role_name == 'Document Control Custodian'?route('dcc.evidence.store'):route('po.evidence.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="row">
-                    <div class="col-lg-6 col-md-12 mb-3">
+                    <div class="col-12 col-md-12 mb-3">
                         <label for="name" class="form-label">Evidence Name</label><span class="text-danger"> *</span>
                         <input type="text" class="form-control shadow-none" name="name" id="name" placeholder="Enter Evidence Name" required>
-                    </div>
-                    <div class="col-lg-6 col-md-12 mb-3">
-                        <label for="date" class="form-label">Date</label><span class="text-danger"> *</span>
-                        <input type="date" id="date" class="form-control shadow-none" name="date" max="{{ date('Y-m-d') }}">
                     </div>
                 </div>
                 <div class="col-12 mb-3">

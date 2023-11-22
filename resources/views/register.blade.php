@@ -43,22 +43,22 @@
                             <h3 class="text-center text-success">Register</h3>
                             <div class="row">
                             <div class="col-6 mt-3">
-                                <span>Firstname</span>
-                                <input type="text" class="form-control" name="firstname" placeholder="Enter firstname" required value="{{ old('firstname') }}">
+                                <span>First Name</span>
+                                <input type="text" class="form-control" name="firstname" placeholder="Enter first name" required value="{{ old('firstname') }}">
                                 @error('firstname')
                                     <span class="text-danger error_firstname">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="col-6 mt-3">
-                                <span>Middlename</span>
-                                <input type="text" class="form-control" name="middlename" placeholder="Enter middlename" value="{{ old('middlename') }}">
+                                <span>Middle Name</span>
+                                <input type="text" class="form-control" name="middlename" placeholder="Enter middle name" value="{{ old('middlename') }}">
                                 @error('middlename')
                                     <span class="text-danger error_middlename">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="col-6 mt-3">
-                                <span>Surname</span>
-                                <input type="text" class="form-control" name="surname" placeholder="Enter surname" value="{{ old('surname') }}">
+                                <span>Last Name</span>
+                                <input type="text" class="form-control" name="surname" placeholder="Enter last name" value="{{ old('surname') }}">
                                 @error('surname')
                                     <span class="text-danger error_surname">{{ $message }}</span>
                                 @enderror
@@ -71,8 +71,8 @@
                                 @enderror
                             </div>
                             <div class="col-12 mt-3">
-                                <span>Username</span>
-                                <input type="text" class="form-control" name="username" placeholder="username" required value="{{ old('username') }}">
+                                <span>Email</span>
+                                <input type="email" class="form-control" name="username" placeholder="Email" required value="{{ old('username') }}">
                                 @error('username')
                                     <span class="text-danger error_username">{{ $message }}</span>
                                 @enderror

@@ -51,7 +51,7 @@ class ManualController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        if(Auth::user()->role->role_name == 'Process Owner') {
+        if(Auth::user()->role->role_name == 'Process Owner' || Auth::user()->role->role_name == 'Staff') {
             $directories = $this->dr->getDirectoriesAssignedByGrandParent($this->parent, false);
             $dir = $directories->where('id', $request->directory)->firstOrFail();
             

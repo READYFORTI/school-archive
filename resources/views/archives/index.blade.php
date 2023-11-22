@@ -31,6 +31,22 @@
             )   
                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#manualsModal"><i class="fa fa-book"></i> Upload Manual</button>
             @endif
+            @if (Auth::user()->role->role_name == Roles::STAFF
+                && $page_title == 'Manuals' 
+                && !empty($current_directory->area) && $current_directory->area->type == 'process'
+            )
+                <button class="btn btn-success" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i> New</button>
+                <ul class="dropdown-menu text-left">
+                    <li>
+                        <button class="btn toggleDirectoryModal"
+                            data-route="{{ route('archives-store-directory') }}" 
+                            data-bs-toggle="modal" data-bs-target="#directoryModal">
+                                Folder
+                        </button>
+                    </li>
+                </ul>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#manualsModal"><i class="fa fa-book"></i> Upload Manual</button>
+            @endif
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fa fa-search"></i> Search</button>
             @if(
                     (in_array(Auth::user()->role->role_name, [Roles::DOCUMENT_CONTROL_CUSTODIAN, Roles::PROCESS_OWNER])
@@ -244,7 +260,7 @@
         </div>
     @endif
 
-    @if(Auth::user()->role->role_name == Roles::PROCESS_OWNER && $page_title == 'Manuals')
+    @if((Auth::user()->role->role_name == Roles::PROCESS_OWNER || Auth::user()->role->role_name == Roles::STAFF) && $page_title == 'Manuals')
         <div class="modal fade" id="manualsModal" tabindex="-1" aria-labelledby="manualsModalModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -252,7 +268,7 @@
                         <h5 class="modal-title" id="manualsModalModalLabel">Upload Manuals</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form method="POST" action="{{ route('po.manual.store') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route(Auth::user()->role->role_name == Roles::STAFF?'staff.manual.store':'po.manual.store') }}" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" id="current_directory" name="directory" value="{{ $current_directory->id ?? '' }}">
                         <div class="modal-body">

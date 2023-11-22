@@ -37,7 +37,7 @@ class EvidenceController extends Controller
     public function create()
     {
         $directories = [];
-        if(Auth::user()->role->role_name == 'Process Owner') {
+        if(Auth::user()->role->role_name == 'Process Owner' || Auth::user()->role->role_name == 'Document Control Custodian') {
             $directories = $this->dr->getDirectoriesAssignedByGrandParent($this->parent);
         }
 
@@ -48,7 +48,7 @@ class EvidenceController extends Controller
     {
         $user = Auth::user();
 
-        if(Auth::user()->role->role_name == 'Process Owner') {
+        if(Auth::user()->role->role_name == 'Process Owner' || Auth::user()->role->role_name == 'Document Control Custodian') {
             $directories = $this->dr->getDirectoriesAssignedByGrandParent($this->parent);
             $dir = $directories->where('id', $request->directory)->firstOrFail();
             
@@ -81,7 +81,7 @@ class EvidenceController extends Controller
             'description' => $request->description,
             'user_id' => $user->id,
             'directory_id' => $directory->id,
-            'date' => $request->date,
+            'date' => now(),
             'file_id' => $file_id
         ]);
 

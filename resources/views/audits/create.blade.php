@@ -26,16 +26,14 @@
                         @csrf
                         <div>
                             <div class="mb-3">
-                                <label for="audit_plan_name" class="form-label">Name</label><i class="text-danger"> *</i>
-                                <input type="text" class="form-control shadow-none" id="audit_plan_name" name="name" placeholder="Enter name" required>
+                                <select class="form-select" id="audit_plan_name" name="name" required>
+                                    <option class="1st Half">1st Half</option>
+                                    <option class="2nd Half">2nd Half</option>
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <label for="audit_plan_description" class="form-label">Description</label><i class="text-danger"> *</i>
                                 <textarea class="form-control shadow-none" rows="3" id="audit_plan_description" name="description" placeholder="Enter description" required></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="audit_plan_date" class="form-label">Date</label><i class="text-danger"> *</i>
-                                <input type="date" class="form-control date shadow-none" id="audit_plan_date" name="date" placeholder="Enter date" required>
                             </div><br>
         
                             <div class="mt-4">
@@ -46,6 +44,9 @@
                                         <tr>
                                             <th>PROCESS</th>
                                             <th>AUDITORS</th>
+                                            <th>Date</th>
+                                            <th>From</th>
+                                            <th>TO</th>
                                             <th><i class="fas fa-cogs"></i></th>
                                         </tr>
                                     </thead>
@@ -112,11 +113,23 @@
                         </div>
                         <div class="mb-3 auditors-panel">
                             <label for="name" class="form-label">Auditors</label>
-                            <select id="auditors" class="form-control select2" multiple required data-placeholder="Choose Auditors" required>
+                            <select required id="auditors" class="form-control select2" multiple required data-placeholder="Choose Auditors" required>
                                 @foreach($auditors as $user)
                                     <option value="{{ $user->id }}">{{ sprintf("%s %s", $user->firstname ?? '', $user->surname ?? '') }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="date" class="form-lable">Date</label>
+                            <input type="date" id="date_selected" class="form-control" name="date[]" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="date" class="form-lable">From</label>
+                            <input type="time" id="from_time" class="form-control" name="from_time[]" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="date" class="form-lable">To</label>
+                            <input type="time" id="to_time" class="form-control" name="to_time[]" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -202,6 +215,10 @@
             }
         });
 
+        let date_selected = $('#date_selected').val();
+        let from_time = $('#from_time').val();
+        let to_time = $('#to_time').val();
+
         var selected = tree.treeview('getSelected');
         var area_names = '';
         var area_ids = '';
@@ -220,11 +237,17 @@
         $('.table-process tbody').append(`<tr>
                 <td>` + area_names + `</td>
                 <td>` + auditors_name + `</td>
+                <td>` + date_selected + `</td>
+                <td>` + from_time + `</td>
+                <td>` + to_time + `</td>
                 <td>
                     <button class="btn btn-danger btn-remove" type="button"><i class="fa fa-times"></i></button>
                     <input type="hidden" name="area_names[]" value="` + area_names + `">
                     <input type="hidden" name="process[]" value="` + area_ids + `">
                     <input type="hidden" name="auditors[]" value="` + auditors_id + `">
+                    <input type="hidden" name="date_selected[]" value="` + date_selected + `">
+                    <input type="hidden" name="from_time[]" value="` + from_time + `">
+                    <input type="hidden" name="to_time[]" value="` + to_time + `">
                 </td>
         </tr>`);
 

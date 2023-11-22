@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Validation\Rules\Password;
 use Ramsey\Uuid\Uuid;
 
 use App\Models\Area;
@@ -70,7 +71,7 @@ class UserController extends Controller
             'surname'=>['required','max:255'],
             'suffix'=>['nullable','max:255'],
             'username'=>['required','max:255','unique:users,username'],
-            'password'=>['required','confirmed','max:255'],
+            'password'=>['required','confirmed','max:255', Password::min(8)->mixedCase()->numbers()->symbols()],
             'img'=>['nullable', 'file','mimes:jpg,jpeg,png','max:10000']
         ]);
         $validatedData['password'] = Hash::make($validatedData['password']);

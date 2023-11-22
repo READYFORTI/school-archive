@@ -159,7 +159,8 @@ Route::middleware(['auth'])->group(function(){
             return redirect()->route('dcc-dashboard-page');
         });
         Route::get('/dashboard',[DCCController::class,'dashboard'])->name('dcc-dashboard-page');
-        
+        Route::get('/create', [EvidenceController::class, 'create'])->name('dcc.access.evidence.create');
+        Route::post('/evidence', [EvidenceController::class, 'store'])->name('dcc.evidence.store');        
         Route::middleware('area_assigned')->name('dcc.')->group(function(){
             Route::middleware('area_assigned')->group(function(){
                 Route::get('evidence', [DCCController::class, 'evidences'])->name('evidence.index');
@@ -221,12 +222,22 @@ Route::middleware(['auth'])->group(function(){
         // Sidebar
         Route::get('/dashboard', [StaffDashboardController::class, 'dashboard'])->name('staff.dashboard');
         
+        // Route::get('/manuals', [ManualController::class, 'index'])->name('staff-manuals');
+        
+        Route::prefix('area')->group(function(){
+            Route::get('/',[AreaController::class, 'index'])->name('staff-area-page');
+            Route::post('/',[AreaController::class, 'store'])->name('staff-area-store');
+            Route::post('/edit',[AreaController::class, 'update'])->name('staff-area-update');
+        });
+
         Route::prefix('templates')->group(function(){
             Route::get('/', [TemplateController::class, 'index'])->name('staff.template.index');
             Route::get('/create', [TemplateController::class, 'create'])->name('staff.template.create');
             Route::post('/', [TemplateController::class, 'store'])->name('staff.template.store');
         });
-        
+        Route::prefix('manual')->group(function(){
+            Route::post('/', [ManualController::class, 'store'])->name('staff.manual.store');
+        });
         Route::get('/manuals', [ManualController::class, 'index'])->name('staff.manual.index');
     });
 

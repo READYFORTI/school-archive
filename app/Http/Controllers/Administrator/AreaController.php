@@ -22,7 +22,7 @@ class AreaController extends Controller
     {
         $main_areas = Area::with(['children'])->whereNull('parent_area')->get();
         $areas = Area::with(['children'])->get();
-        return view('administrators.area', compact('areas', 'main_areas'));
+        return view(auth()->user()->role->id == 1?'staff.area':'administrators.area', compact('areas', 'main_areas'));
     }
 
     public function store(Request $request)

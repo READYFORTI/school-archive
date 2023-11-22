@@ -128,9 +128,9 @@ class AuditController extends Controller
                 $audit_plan->directory_id = $dir->id;
             }
             
-            $audit_plan->name = $request->name;
+            $audit_plan->name = $request->name . ' ' .now()->year;
             $audit_plan->description = $request->description;
-            $audit_plan->date = $request->date;
+            $audit_plan->date = now();
             $audit_plan->save();
             
             Directory::where('id', $audit_plan->directory_id)->update(['name' => $audit_plan->name]);
@@ -141,7 +141,10 @@ class AuditController extends Controller
             foreach($request->area_names as $key => $area_name) {
                 $batch = AuditPlanBatch::create([
                     'name' => $area_name,
-                    'audit_plan_id' => $audit_plan->id
+                    'audit_plan_id' => $audit_plan->id,
+                    'date_scheduled'=> $request->date_selected[$key],
+                    'from_time'=> $request->from_time[$key],
+                    'to_time'=> $request->to_time[$key],
                 ]);
 
                 $areas = explode(',', $request->process[$key]);
@@ -157,7 +160,7 @@ class AuditController extends Controller
                     $auditors = explode(',',$request->auditors[$key]);
                     foreach($auditors as $auditor) {
                         AuditPlanAreaUser::firstOrcreate([
-                            'user_id' => $auditor,
+                                'user_id' => $auditor,
                             'audit_plan_id' => $audit_plan->id,
                             'audit_plan_batch_id' => $batch->id,
                             'audit_plan_area_id' => $audit_plan_area->id

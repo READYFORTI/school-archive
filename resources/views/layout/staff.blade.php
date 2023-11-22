@@ -1,6 +1,15 @@
 <li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->routeIs('user.dashboard') ? 'active' : '' }}" href="{{ route('user.dashboard') }}"><i class="fas fa-tachometer-alt mx-3 fa-lg"></i><span class="text-nowrap mx-2">Dashboard</span></a></li>
+<li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->routeIs('staff-area-page') ? 'active' : '' }}" href="{{ route('staff-area-page') }}"><i class="fas fa-building mx-3 fa-lg"></i><span class="text-nowrap mx-2">Areas</span></a></li>
 <li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->is('templates*') || request()->routeIs('staff.template.index') ? 'active' : '' }}" href="{{ route('staff.template.index') }}"><i class="fas fa-newspaper mx-3 fa-lg"></i><span class="text-nowrap mx-2">Templates</span></a></li>
 <li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->is('manuals*') || request()->routeIs('staff.manual.index') ? 'active' : '' }}" href="{{ route('staff.manual.index') }}"><i class="fas fa-book mx-3 fa-lg"></i><span class="text-nowrap mx-2">Manuals</span></a></li>
+<li class="nav-item dropdown {{ request()->is('process-manuals*') ? 'active' : '' }}">
+    <a data-bs-auto-close="false" class="dropdown-toggle nav-link text-start py-1 px-0 position-relative" aria-expanded="true" data-bs-toggle="dropdown" href="#"><i class="fas fa-receipt mx-3 fa-lg"></i><span class="text-nowrap mx-2">Process Manuals</span><i class="fas fa-caret-down float-none float-lg-end me-3"></i></a>
+    <div class="dropdown-menu drop-menu border-0 animated fadeIn {{ request()->is('process-manuals*') ? 'show' : '' }}" data-bs-popper="none">
+        <a class="dropdown-item {{ request()->routeIs('process-manuals.pending') ? 'active' : '' }}" href="{{ route('process-manuals.pending') }}"><span>Pending</span></a>
+        <a class="dropdown-item {{ request()->routeIs('process-manuals.pending-updates') ? 'active' : '' }}" href="{{ route('process-manuals.pending-updates') }}"><span>Pending Updates</span></a>
+        <a class="dropdown-item {{ request()->routeIs('process-manuals.all') ? 'active' : '' }}" href="{{ route('process-manuals.all') }}"><span>All Process Manuals</span></a>
+    </div>
+</li>
 <li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->routeIs('messages') ? 'active' : '' }}" href="{{ route('messages') }}"><i class="fa fa-envelope mx-3 fa-lg"></i><span class="text-nowrap mx-2">Messages</span></a></li>
 <!-- <li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->routeIs('archives-shared') ? 'active' : '' }}" href="{{ route('archives-shared') }}"><i class="fas fa-share mx-3 mx-3"></i><span class="text-nowrap mx-2">Shared with me</span></a></li> -->
 <li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->is('archives*') ? 'active' : '' }}" href="{{ route('archives-page') }}"><i class="fas fa-archive mx-3 fa-lg"></i><span class="text-nowrap mx-2">Archive</span></a></li>
