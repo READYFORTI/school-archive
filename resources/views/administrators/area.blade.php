@@ -143,7 +143,7 @@
                         <div class="col-md-2 col-sm-4 col-6 mb-4 text-center" > <!-- Adjust the column widths based on your requirements -->
                             <button class="pt-3 btn align-items-center justify-content-center btn-sub-area" data-area-id="` + i.id + `" data-bs-toggle="dropdown" aria-expanded="false" style="border: none">
                             <i class="fa fa-building fa-4x text-success"></i> <!-- Increased the icon size to 3x -->
-                            <p style="text-overflow: ellipsis; font-size: 14px;"><small>` + i.area_name + `</small></p> <!-- Increased the font size to 14px -->
+                            <p style="text-overflow: ellipsis; font-size: 14px;" class="text-dark"><small>` + i.area_name + `</small></p> <!-- Increased the font size to 14px -->
                             </button>
                             <ul class="dropdown-menu text-left">
                             <li><button type="button" class="dropdown-item btn-edit " data-type="` + i.type + `" data-area-id="` + i.id + `" data-bs-toggle="modal" data-bs-target="#areaModal"><i class="fas fa-edit"></i> Edit</button></li>
@@ -177,7 +177,7 @@
                         program_container.append(`<div class="col-2 text-center">
                             <button class="pt-3 btn align-items-center justify-content-center btn-sub-area" data-area-id="` + i.id + `" data-bs-toggle="dropdown" aria-expanded="false" style="border: none">
                                 <i class="fa fa fa-book fa-2x text-success"></i>
-                                <p style="text-overflow: ellipsis"><small>` + i.area_name + `</small></p>
+                                <p style="text-overflow: ellipsis" class="text-dark"><small>` + i.area_name + `</small></p>
                             </button>
                             <ul class="dropdown-menu text-left">
                                 <li><button type="button" class="dropdown-item btn-edit" data-area-id="` + i.id + `" data-type="` + i.type + `" data-bs-toggle="modal" data-bs-target="#areaModal"><i class="fas fa-edit"></i> Edit</button></li>
@@ -194,7 +194,7 @@
                         process_container.append(`<div class="col-2 text-center">
                             <button class="pt-3 btn align-items-center justify-content-center btn-sub-area" data-area-id="` + i.id + `" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa fa-book fa-2x text-success"></i>
-                                <p style="text-overflow: ellipsis"><small>` + i.area_name + `</small></p>
+                                <p style="text-overflow: ellipsis" class="text-dark"><small>` + i.area_name + `</small></p>
                             </button>
                             <ul class="dropdown-menu text-left">
                                 <li><button type="button" class="dropdown-item btn-edit" data-area-id="` + i.id + `" data-type="` + i.type + `" data-bs-toggle="modal" data-bs-target="#areaModal">Edit</button></li>
@@ -223,7 +223,7 @@
                         process_container.append(`<div class="col-2 text-center">
                             <button class="pt-3 btn align-items-center justify-content-center btn-sub-area" data-area-id="` + i.id + `" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa fa-book fa-2x text-success"></i>
-                                <p style="text-overflow: ellipsis"><small>` + i.area_name + `</small></p>
+                                <p style="text-overflow: ellipsis" class="text-dark"><small>` + i.area_name + `</small></p>
                             </button>
                             <ul class="dropdown-menu text-left">
                                 <li><button type="button" class="dropdown-item btn-edit" data-area-id="` + i.id + `" data-type="` + i.type + `" data-bs-toggle="modal" data-bs-target="#areaModal">Edit</button></li>
