@@ -71,7 +71,7 @@
                             <div class="card-body pt-2 pb-5">
                                 <h4>Associate</h4>
                                 <hr>
-                                <p class="text-success"><strong>Support: 50%, Confidence 25%</strong></p>
+                                <p class="text-success"><strong>Support: 50%, Confidence 50%</strong></p>
                                 <div class="mt-3" >
                                     <form action="#" id="associateForm">
                                         <label>Office</label>
