@@ -152,9 +152,13 @@
 <script>
     
     var areas = {!! json_encode($tree_areas) !!};
+    var main = {!! json_encode($main) !!};
+
+    console.log(areas);
+    console.log(main);
 
     var tree = $('.tree').treeview({
-        data: areas,
+        data: main,
         multiSelect: true,
         collapseIcon: "fa fa-minus",
         expandIcon: "fa fa-plus",

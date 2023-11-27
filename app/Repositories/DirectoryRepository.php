@@ -332,6 +332,7 @@ class DirectoryRepository {
                 'id' => $area->id,
                 'text' => $area->area_name,
                 'selectable' => $selectable,
+                'type' => $area->type,
                 'state' => [
                     'selected' => in_array($area->id, $selected_areas),
                     'expanded' => in_array($area->id, $selected_areas),

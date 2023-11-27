@@ -74,7 +74,76 @@ class AuditController extends Controller
     {
         $auditors = User::whereHas('role', function($q) { $q->where('role_name', 'Internal Auditor'); })->get();
         $tree_areas = $this->dr->getAreaFamilyTree(null, 'process');
-        return view('audits.create', compact('tree_areas', 'auditors'));
+        $main = $this->getProcess();
+        return view('audits.create', compact('tree_areas', 'auditors','main'));
+    }
+
+    public function getProcess() {
+        $areas = Area::query()->with('parent')->get();
+        $main = $areas->whereNull('type')->toArray();
+        $process = $areas->where('type','process')->groupBy('area_name')->toArray();
+        $data = [
+            
+        ];
+        foreach ($main as $key => $value) {
+            $value['selectable'] = false;
+            $value['text'] = $value['area_name'];
+            $data[] = $value;
+        }
+        foreach ($process as $key => $value) {
+            foreach ($value as $k => $v) {
+                $root = $this->getRootOfProcess($v['parent']);
+                foreach ($data as $key2 => $value2) {
+                    if (!isset($data[$key2]['nodes'])) {
+                        $data[$key2]['nodes'] = []; 
+                    }
+                    if ($root == $value2['id']) {
+                        $v['nodes'] = $this->getDirectoryTree($v);
+                        $v['parent']['text'] = $v['parent']['area_name'];
+                        if (!in_array($v['area_name'],array_column($data[$key2]['nodes'],'area_name'))) {
+                            $data[$key2]['nodes'][] = [
+                                'area_name'=>$v['area_name'],
+                                'text'=>$v['area_name'],
+                                'selectable'=>false,
+                                'nodes'=>[
+                                    $v['parent'],
+                                ],
+                            ];
+                        }
+                        else{
+                            $array_key = array_search($v['area_name'],$data[$key2]['nodes']);
+                            $data[$key2]['nodes'][$array_key]['nodes'][] = $v['parent'];
+                            $data[$key2]['nodes'][$array_key]['selectable'] = false;
+                            $data[$key2]['nodes'][$array_key]['text'] = $data[$key2]['nodes'][$array_key]['area_name'];
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        // foreach ($data as $key => $value) {
+        //     $data[$key]['selectable'] = $value['type'] == 'office' || $value['type'] == 'program';
+        //     $data[$key]['text'] = $value['area_name'];
+        // }
+        return $data;
+    }
+
+    public function getRootOfProcess($area) {
+        if (is_null($area['parent'])) {
+            return $area['id'];
+        }
+        return $this->getRootOfProcess($area['parent']);
+    }
+
+    public function getDirectoryTree($area, $list = []) {
+        if (is_null($area['parent'])) {
+            array_pop($list);
+            return array_reverse($list);
+        }
+        $area['parent']['text'] = $area['parent']['area_name'];
+        $list[] = $area['parent'];
+        return $this->getDirectoryTree($area['parent'],$list);
     }
 
     public function getPrevious()
