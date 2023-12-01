@@ -24,13 +24,14 @@
     </style>
 @endsection
 @section('content')
+<div style="height:100vh">
     <div class="container h-100">
         <div class="row h-100">
             <div class="col-lg-6">
                 <div class="container h-100 d-flex align-items-center">
                     <div class="h-fit text-center">
                         <img src="/storage/assets/dnsc-logo.png" alt="dnsc icon" class="img-fluid w-75">
-                        <h3 class="text-center mt-2 text-success">DOCUMENT ARCHIVING AND TRACKING</h3>
+                        <h3 class="text-center mt-2 text-success">Document Archiving and Tracking for DNSC QMS-ISO Undertakings</h3>
                     </div>
                 </div>
             </div>
@@ -111,6 +112,7 @@
             </div>
         </div>
     </div>
+</div>
 @endsection
 @section('js')
 @vite(['resources/js/login.js'])
