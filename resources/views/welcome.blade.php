@@ -49,14 +49,14 @@
                                 <h3 class="text-center text-success">Welcome!</h3>
                                 <div class="mt-3">
                                     <span>Username</span>
-                                    <input type="text" class="form-control" name="username" placeholder="username" required value="{{ old('username') }}">
+                                    <input type="text" class="form-control shadow-none" name="username" placeholder="username" required value="{{ old('username') }}">
                                     @error('username')
                                         <span class="text-danger error_username">{{ $message }}</span>
                                     @enderror
                                 </div>
                                 <div class="mt-3">
                                     <span>Password</span>
-                                    <input type="password" class="form-control" name="password" placeholder="password" required value="{{ old('password') }}">
+                                    <input type="password" class="form-control shadow-none" name="password" placeholder="password" required value="{{ old('password') }}">
                                 </div>
                                 <div class="mt-3 text-center">
                                     <button type="submit" class="btn btn-success">Login</button>
