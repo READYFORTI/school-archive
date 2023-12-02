@@ -60,7 +60,7 @@
                         @csrf
                         @method('POST')
                         <div class=" mb-3 m-3 row">
-                            <h3 class="text-center text-success">REGISTER</h3><br><br><br>
+                            <h3 class="text-center text-success">Register</h3><br><br><br>
                             <div class="row">
                             <div class="col-6 mt-3">
                                 <span>First Name</span>

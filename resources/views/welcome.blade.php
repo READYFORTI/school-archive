@@ -14,6 +14,14 @@
         .link:hover{
             color: #198754;
         }
+        .field-icon {
+        float: right;
+       
+        margin-top: -30px;
+        margin-right:8px;
+        color: gray;
+       
+        }
         
         body {
             background: url('{{ asset("/media/bgbg.jpg") }}') no-repeat center center fixed; 
@@ -54,10 +62,34 @@
                                         <span class="text-danger error_username">{{ $message }}</span>
                                     @enderror
                                 </div>
-                                <div class="mt-3">
+                                {{-- <div class="mt-3">
                                     <span>Password</span>
                                     <input type="password" class="form-control shadow-none" name="password" placeholder="password" required value="{{ old('password') }}">
+                                </div> --}}
+
+
+                                <div class="mt-3">
+                                    <label for="password">Password </label>
+                                    <input type="password" class="form-control mb-1 shadow-none" name="password" id="password" placeholder="Password" required >
+                                    <span toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                    <small class="help-block mt-3" id="password-text"></small>
                                 </div>
+
+                                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+                                <script>
+                                    $(".toggle-password").click(function() {
+                                    $(this).toggleClass("fa-eye fa-eye-slash");
+                                    var input = $($(this).attr("toggle"));
+                                    if (input.attr("type") == "password") {
+                                    input.attr("type", "text");
+                                    } else {
+                                    input.attr("type", "password");
+                                    }
+                                    });
+                                </script>
+
+
+
                                 <div class="mt-3 text-center">
                                     <button type="submit" class="btn btn-success">Login</button>
                                 </div>
