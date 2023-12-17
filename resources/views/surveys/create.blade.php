@@ -67,17 +67,6 @@
                                             <span class="text-danger error_email">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    <div class="mt-3">
-                                        <label>Type</label>
-                                        <select name="type" class="form-control select-type" required>
-                                            <option value="">Select Type</option>
-                                            <option value="Student">Student</option>
-                                            <option value="Visitor">Visitor</option>
-                                        </select>
-                                        @error('type')
-                                            <span class="text-danger error_type">{{ $message }}</span>
-                                        @enderror
-                                    </div>
                                     <div class="type Student">
                                         <div class="mt-3">
                                             <label>Course</label>

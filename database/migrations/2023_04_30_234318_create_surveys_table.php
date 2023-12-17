@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('contact_number');
-            $table->string('type');
+            $table->string('type')->default('Visitor')->nullable();
             $table->string('course')->nullable();
             $table->string('course_year')->nullable();
             $table->string('occupation')->nullable();
