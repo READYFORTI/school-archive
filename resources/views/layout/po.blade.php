@@ -12,5 +12,7 @@
         <a class="dropdown-item {{request()->routeIs('po.evidence.create') ? 'active' : '' }}" href="{{ route('po.evidence.create') }}"><span>Add Evidence</span></a>
     </div>
 </li>
+<li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->route()->getName() == 'po.audit' ? 'active' : '' }}" href="{{ route('po.audit') }}"><i class="fas fa-archive mx-3 fa-lg"></i><span class="text-nowrap mx-2">Audit Report</span></a></li>
 <!-- <li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->routeIs('archives-shared') ? 'active' : '' }}" href="{{ route('archives-shared') }}"><i class="fas fa-share mx-3 mx-3"></i><span class="text-nowrap mx-2">Shared with me</span></a></li> -->
 <li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->is('archives*') ? 'active' : '' }}" href="{{ route('archives-page') }}"><i class="fas fa-archive mx-3 fa-lg"></i><span class="text-nowrap mx-2">Archive</span></a></li>
+<li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->route()->getName() == 'po.audit.evaluate' ? 'active' : '' }}" href="{{ route('po.audit.evaluate') }}"><i class="fas fa-archive mx-3 fa-lg"></i><span class="text-nowrap mx-2">Audit Evaluation</span></a></li>

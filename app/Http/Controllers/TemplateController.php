@@ -27,14 +27,15 @@ class TemplateController extends Controller
 
     public function index(Request $request, $directory_name = '')
     {
-        $user = Auth::user();
-        if(in_array($user->role->role_name, ['Quality Assurance Director', 'Staff']) || !empty($request->directory)) {
-            $data = $this->dr->getDirectoriesAndFiles($this->parent, $request->directory ?? null);
-        }else{
-            $template_dir = $this->dr->getDirectory('Templates');
-            $directory = $this->dr->getDirectory($user->role->role_name, $template_dir->id);
-            $data = $this->dr->getDirectoriesAndFiles($this->parent, $directory->id ?? null);
-        }
+        // $user = Auth::user();
+        // if(in_array($user->role->role_name, ['Quality Assurance Director', 'Staff']) || !empty($request->directory)) {
+        //     $data = $this->dr->getDirectoriesAndFiles($this->parent, $request->directory ?? null);
+        // }else{
+            // $template_dir = $this->dr->getDirectory('Templates');
+            // $directory = $this->dr->getDirectory($user->role->role_name, $template_dir->id);
+            // $data = $this->dr->getDirectoriesAndFiles($this->parent, $template_dir->id ?? null);
+        // }
+        $data = $this->dr->getDirectoriesAndFiles($this->parent, $request->directory ?? null);
         
         $data['route'] = strtolower($this->parent);
         $data['page_title'] = $this->parent;

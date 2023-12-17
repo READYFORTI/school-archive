@@ -15,6 +15,7 @@ use App\Http\Controllers\Administrator\ReportsController as AdminReportsControll
 
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OtpController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\DCCController;
 use App\Http\Controllers\DownloadController;
@@ -62,6 +63,8 @@ Route::middleware(['guest'])->group(function(){
         Route::get('/success',[SurveyController::class,'success'])->name('surveys.success');
     });
 });
+
+Route::get('verify/{code}',[OtpController::class,'verifyEmail'])->name('verify-email');
 
 Route::middleware(['auth'])->group(function(){
     Route::get('/unassigned',[AuthController::class,'unassigned'])->name('unassigned');
@@ -176,6 +179,11 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/dashboard',[PODashboardController::class,'dashboard'])->name('po-dashboard-page');
         
         Route::middleware('area_assigned')->name('po.')->group(function(){
+            Route::prefix('audit')->group(function(){
+                Route::get('/',[AuditController::class,'index'])->name('audit');
+                Route::get('download/{id}',[ArchiveController::class,'downloadFile'])->name('audit.download');
+                Route::get('evaluate',[AuditController::class,'auditEvaluation'])->name('audit.evaluate');
+            });
             Route::prefix('evidence')->group(function(){
                 Route::get('/', [EvidenceController::class, 'index'])->name('evidence.index');
                 Route::get('/create', [EvidenceController::class, 'create'])->name('evidence.create');
@@ -248,11 +256,14 @@ Route::middleware(['auth'])->group(function(){
         
         Route::prefix('audit-reports')->name('audit-reports.')->group(function () {
             Route::get('/', [AuditController::class, 'auditReports'])->name('index');
+            Route::get('checklist',[AuditController::class,'checklist'])->name('checklist');
             Route::get('/create', [AuditController::class, 'createAuditReport'])->name('create');
             Route::post('/', [AuditController::class, 'storeAuditReport'])->name('store');
         });
         Route::post('/cars', [AuditController::class, 'storeCars'])->name('cars.store');
     });
+
+    Route::get('upload/{id}',[AuditController::class,'downloadPlan'])->name('audit.file.download');
 
     Route::middleware('lead-auditor')->prefix('lead-auditor')->name('lead-auditor.')->group(function () {
         Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
@@ -270,6 +281,7 @@ Route::middleware(['auth'])->group(function(){
             Route::post('/', [AuditController::class, 'saveAuditPlan'])->name('audit.save');
             Route::post('/{id}/update', [AuditController::class, 'saveAuditPlan'])->name('audit.update');
             Route::delete('/{id}', [AuditController::class, 'deleteAuditPlan'])->name('audit.delete');
+            Route::post('upload',[AuditController::class,'addAuditPlanFile'])->name('audit.file');
         });
         Route::get('/', [AuditController::class, 'auditReports'])->name('audit-reports.index');
         Route::prefix('consolidated-audit-reports')->name('consolidated-audit-reports.')->group(function () {

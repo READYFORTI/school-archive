@@ -110,7 +110,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div><br>
+                                </div>
                             </a>
                         </div>
                     @endif
@@ -146,7 +146,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div><br>
+                                </div>
                             </a>
                         </div>
                     @endif
@@ -181,7 +181,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div><br>
+                                </div>
                             </a>
                         </div>
                     @endif
@@ -309,6 +309,35 @@
                                                     <td>{{ $announcement->name }}</td>
                                                     <td>{{ $announcement->description }}</td>
                                                     <td>{{ $announcement->date ? Carbon\Carbon::parse($announcement->date)->format('M d, Y') : '' }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </div>
+                                </table>
+                            </div>
+                    </div>
+                    </div>
+                    <div class="col-12 px-2">
+                        <div class="card p-3 mt-3">
+                            <div class="card-body pt-2">
+                                <h4 class="text-success">
+                                    Audit Plan Files
+                                    @if(in_array(auth()->user()->role->role_name, ['Administrators', 'Quality Assurance Director']))
+                                        <a class="btn btn-success" style="float:right" href="{{ route('admin-announcement-create') }}" target="_blank"><span>Create Announcement</span></a>
+                                    @endif
+                                </h4>
+                                <table class="table datatables">
+                                    <thead><tr><td>#</td><td>Name</td><td>Date</td><td>Action</td></tr></thead>
+                                    <div style="max-height:400px; overflow-y:scroll">
+                                        <tbody>
+                                            @foreach($audit_file as $audit)
+                                                <tr class="{{ $loop->index == 0 ? 'text-bold' : ''}}">
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $audit->name }}</td>
+                                                    <td>{{ $audit->date ? Carbon\Carbon::parse($audit->date)->format('M d, Y') : '' }}</td>
+                                                    <td>
+                                                        <a href="{{route('audit.file.download',$audit->id)}}">Download</a>
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>

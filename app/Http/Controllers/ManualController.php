@@ -35,7 +35,7 @@ class ManualController extends Controller
         
         $data['route'] = strtolower($this->parent);
         $data['page_title'] = $this->parent;
-
+        // dd($data['current_directory']->toArray());
         return view('archives.index', $data);
     }
 

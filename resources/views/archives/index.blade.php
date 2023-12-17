@@ -31,9 +31,11 @@
             )   
                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#manualsModal"><i class="fa fa-book"></i> Upload Manual</button>
             @endif
-            @if (Auth::user()->role->role_name == Roles::STAFF
+            @if ((Auth::user()->role->role_name == Roles::STAFF
                 && $page_title == 'Manuals' 
-                && !empty($current_directory->area) && $current_directory->area->type == 'process'
+                && !empty($current_directory->area) && $current_directory->area->type == 'process') 
+                || 
+                (Auth::user()->role->role_name == Roles::STAFF && in_array($current_directory,['System Control','Quality Policy']) )
             )
                 <button class="btn btn-success" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i> New</button>
                 <ul class="dropdown-menu text-left">

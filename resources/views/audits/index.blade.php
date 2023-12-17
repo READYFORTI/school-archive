@@ -32,6 +32,9 @@
         
   
   <div class="container-fluid ">
+    @if (session('message'))
+      {!! session('message') !!}
+    @endif
     <div class="row">
       <div class="col-lg-9">
         <div class="m-3 bg-transparent py-2">
@@ -51,6 +54,37 @@
                       <div class="card-footer d-flex justify-content-center">{{ $plan->name ?? '' }}</div>
                     </div>
                   </a>
+                  @if (!$plan->audit_plan_file)
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-secondary mt-1 w-100">Upload File</button>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <form class="modal-content" enctype="multipart/form-data" method="POST" action="{{ route('lead-auditor.audit.file') }}">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Upload File</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            @csrf
+                            <div class="mb-2">
+                              <label class="form-label" for="audit_plan">File Name</label>
+                              <input type="text" name="filename" class="form-control" required>
+                            </div>
+                            <div class="mb-2">
+                              <label class="form-label" for="audit_plan">Audit Plan File</label>
+                              <input type="file" name="audit_plan_file" class="form-control" required>
+                              <input type="hidden" name="audit_plan_id" value="{{ $plan->id }}">
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Save</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  @else
+                    <a href="{{route('audit.file.download',$plan->id)}}" target="_blank" class="btn btn-secondary w-100 mt-1">{{$plan->audit_plan_file->file_name}}</a>
+                  @endif
                 </div>
                 @endforeach
               </div>

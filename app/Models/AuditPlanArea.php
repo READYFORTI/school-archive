@@ -30,6 +30,10 @@ class AuditPlanArea extends Model
         );
     }
 
+    public function lead() {
+        return $this->hasOneThrough(User::class,AuditPlanArea::class,'lead_user_id','id','id','user_id');
+    }
+
     public function area_users() {
         return $this->hasMany(AuditPlanAreaUser::class);
     }

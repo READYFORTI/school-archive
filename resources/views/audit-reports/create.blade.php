@@ -63,7 +63,7 @@
             <div class="px-2">
               <div class="mb-3">
                   <label for="name" class="form-label">Name</label>
-                  <input type="text" class="form-control" name="cars_name" id="cars_name" placeholder="Enter Filename" required>
+                  <input type="text" class="form-control" name="cars_name" id="cars_name" placeholder="Enter Filename">
               </div>
               <div class="mb-3">
                   <label for="date" class="form-label">Date:</label>
@@ -71,12 +71,12 @@
               </div>
               <div class="mb-3">
                   <label for="search" class="form-label">Description:</label>
-                  <textarea name="cars_description" class="form-control" rows="3"></textarea>
+                  <textarea name="cars_description" id="cars_description" class="form-control" rows="3"></textarea>
               </div>
               <div class="mb-3">
                   <label for="file_attachments" class="form-label">Attachment</label>
-                  <input type="file" class="form-control" name="cars_file_attachments[]" 
-                      id="file_attachments" required multiple
+                  <input type="file" id="cars_file" class="form-control" name="cars_file_attachments[]" 
+                      id="file_attachments2" multiple
                       accept="image/jpeg,image/png,application/pdf,application/vnd.oasis.opendocument.text,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
               </div>
             </div>
@@ -121,6 +121,16 @@
       $('.cars-section').addClass('d-none');
       if(this.checked) {
         $('.cars-section').removeClass('d-none');
+        $('#cars_name').attr('required',true);
+        $('#date').attr('required',true);
+        $('#cars_description').attr('required',true);
+        $('#file_attachments2').attr('required',true);
+      }
+      else{
+        $('#cars_name').attr('required',false);
+        $('#date').attr('required',false);
+        $('#cars_description').attr('required',false);
+        $('#file_attachments2').attr('required',false);
       }
     })
 </script>

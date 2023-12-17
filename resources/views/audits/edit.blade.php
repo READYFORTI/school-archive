@@ -47,6 +47,7 @@
                                         <table class="table text-black table-process">
                                         <thead class="text-white text-uppercase bg-secondary">
                                             <tr>
+                                                <td>Team Lead</td>
                                                 <td>Auditors</td>
                                                 <td>Process</td>
                                                 <td>Date</td>
@@ -57,8 +58,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($batches as $batch)
+                                            @foreach($batches as $key => $batch)
                                                 <tr>
+                                                    <td>👩🏻‍💻 {{ $batch->lead[$key]['firstname'] }} {{ $batch->lead[$key]['surname'] }}</td>
                                                     <td>👩🏻‍💻 {{ $batch->user_names() }}</td>
                                                     <td>{{ $batch->area_names() }}</td>
                                                     <td>{{ $batch->date_scheduled }}</td>
@@ -77,6 +79,10 @@
                                                         @else
                                                             <span class="text-danger">Not Yet</span>
                                                         @endif
+                                                        @if (strtotime($batch->date_scheduled) - strtotime($batch->audit_report) < 0)
+                                                            <span class="text-danger"> (Late)</span>
+                                                        @endif
+                                                        
                                                     </td>
                                                 </tr>
                                             @endforeach

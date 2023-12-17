@@ -93,4 +93,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(AuditPlanAreaUser::class);
     }
+
+    public function audit_plan_areas()
+    {
+        return $this->hasOne(AuditPlanArea::class,'lead_user_id');
+    }
 }

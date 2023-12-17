@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('audit_plan_areas', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('lead_user_id')->constrained('users','id');
             $table->foreignId('audit_plan_id')->nullable()->constrained();
             $table->foreignId('area_id')->nullable()->constrained();
             $table->timestamps();

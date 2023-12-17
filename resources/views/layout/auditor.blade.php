@@ -5,6 +5,7 @@
     <a data-bs-auto-close="false" class="dropdown-toggle nav-link text-start py-1 px-0 position-relative" aria-expanded="true" data-bs-toggle="dropdown" href="#"><i class="fas fa-receipt mx-3 fa-lg"></i><span class="text-nowrap mx-2">Audit Reports</span><i class="fas fa-caret-down float-none float-lg-end me-3"></i></a>
     <div class="dropdown-menu drop-menu border-0 animated fadeIn {{ request()->is('audit-reports*') || request()->is('auditor/audit-reports*') ? 'show' : '' }}" data-bs-popper="none">
         <a class="dropdown-item {{ request()->is('audit-reports*') || request()->routeIs('auditor.audit-reports.index') ? 'active' : '' }}" href="{{ route('auditor.audit-reports.index') }}"><span>Audit Report List</span></a>
+        <a class="dropdown-item {{ request()->is('audit-reports*') || request()->routeIs('auditor.audit-reports.checklist') ? 'active' : '' }}" href="{{ route('auditor.audit-reports.checklist') }}"><span>Audit Checklist</span></a>
         <a class="dropdown-item {{request()->routeIs('auditor.audit-reports.create') ? 'active' : '' }}" href="{{ route('auditor.audit-reports.create') }}"><span>Add Audit Report</span></a>
     </div>
 </li>

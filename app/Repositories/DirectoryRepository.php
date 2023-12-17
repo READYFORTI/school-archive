@@ -49,7 +49,10 @@ class DirectoryRepository {
         }
 
         // Check if directories are assign or parent of assigned
-        $directories = $directories->filter(function ($directory) use($grand_parents, $current_user) {
+        $directories = $directories->filter(function ($directory) use($grand_parents, $current_user, $grand_parent) {
+            if (!is_null($grand_parent) && $grand_parent == 'Templates') {
+                return in_array($this->getGrandParent($directory), $grand_parents);
+            }
             return in_array($this->getGrandParent($directory), $grand_parents) && $this->allowedDirectory($directory, $current_user);
         });
 

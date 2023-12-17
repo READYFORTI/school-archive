@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditPlanFile;
 use Illuminate\Http\Request;
 
+use Ramsey\Uuid\Uuid;
 use Storage;
 use Carbon\Carbon;
 use App\Models\Car;
@@ -34,21 +36,80 @@ class AuditController extends Controller
         $this->dr = new DirectoryRepository;
     }
 
+    public function auditEvaluation() {
+        return view('PO.audit.evaluate');
+    }
+
     public function index(Request $request)
     {
         $user = Auth::user();
 
         if($user->role->role_name == 'Internal Lead Auditor') {
             $auditors = User::whereHas('role', function($q) { $q->where('role_name', 'Internal Auditor'); })->get();
-            $audit_plans = AuditPlan::latest()->get();
-        }else{
+            $audit_plans = AuditPlan::query()
+            ->with('audit_plan_file')
+            ->latest()->get();
+        }
+        else if($user->role->role_name == 'Process Owner'){
+            if (!$request->has('directory')) {
+                $area = AreaUser::query()
+                ->where('user_id',Auth::user()->id)
+                ->get();
+                $assigned = $area->pluck('area_id')->toArray();
+                $audit_plans = AuditPlan::query()
+                ->join('audit_plan_areas','audit_plan_areas.audit_plan_id','audit_plans.id')
+                ->whereIn('audit_plan_areas.area_id',$assigned)
+                ->groupBy('audit_plans.name')
+                ->get();
+            }
+            else{
+                $report_list = AuditReport::query()
+                ->where('audit_plan_id',$request->directory)
+                ->get();
+                // dd($report_list->toArray());
+                // dd($reports->toArray());
+                return view('PO.audit.list',compact('report_list'));
+            }
+            // dd($audit_plans->toArray());
+            return view('PO.audit.index',compact('audit_plans'));
+        }
+        else{
             $auditors = [];
             $audit_plans = AuditPlan::whereHas('users', function($q) { $q->where('user_id', Auth::user()->id); })->latest()->get();
         }
-        
         return view('audits.index', compact('audit_plans', 'auditors'));
     }
 
+    public function addAuditPlanFile(Request $request) {
+        if ($request->hasFile('audit_plan_file')) {
+            $uuid = Uuid::uuid4()->toString().'.'.$request->file('audit_plan_file')->getClientOriginalExtension();
+            $link = $request->file('audit_plan_file')->storeAs('public/audit_plan',$uuid);
+            $audit = new AuditPlanFile;
+            $audit->audit_plan_id = $request->audit_plan_id;
+            $audit->file_name = $request->filename . '.' . $request->file('audit_plan_file')->getClientOriginalExtension();
+            $audit->link = $link;
+            $audit->save();
+            return back()->withMessage('
+                <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+                    File uploaded successfully!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            ');
+        };
+        return back()->withMessage('
+            <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+                Failed to upload file!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        ');
+    }
+
+    public function downloadPlan($id) {
+        if ($id) {
+            $file = AuditPlanFile::findOrFail($id);
+            return Storage::download($file->link,$file->file_name);
+        }
+    }
     public function areas(Request $request, $id)
     {
         $user = Auth::user();
@@ -85,46 +146,56 @@ class AuditController extends Controller
         $data = [
             
         ];
-        foreach ($main as $key => $value) {
-            $value['selectable'] = false;
-            $value['text'] = $value['area_name'];
-            $data[] = $value;
-        }
+        // foreach ($main as $key => $value) {
+        //     array_push($data,array(
+        //         'id'=>$value['id'],
+        //         'text'=>$value['area_name'],
+        //         'selectable'=>false,
+        //         'nodes'=>array()
+        //     ));
+        // }
+        
         foreach ($process as $key => $value) {
-            foreach ($value as $k => $v) {
-                $root = $this->getRootOfProcess($v['parent']);
-                foreach ($data as $key2 => $value2) {
-                    if (!isset($data[$key2]['nodes'])) {
-                        $data[$key2]['nodes'] = []; 
-                    }
-                    if ($root == $value2['id']) {
-                        $v['nodes'] = $this->getDirectoryTree($v);
-                        $v['parent']['text'] = $v['parent']['area_name'];
-                        if (!in_array($v['area_name'],array_column($data[$key2]['nodes'],'area_name'))) {
-                            $data[$key2]['nodes'][] = [
-                                'area_name'=>$v['area_name'],
-                                'text'=>$v['area_name'],
-                                'selectable'=>false,
-                                'nodes'=>[
-                                    $v['parent'],
-                                ],
-                            ];
-                        }
-                        else{
-                            $array_key = array_search($v['area_name'],$data[$key2]['nodes']);
-                            $data[$key2]['nodes'][$array_key]['nodes'][] = $v['parent'];
-                            $data[$key2]['nodes'][$array_key]['selectable'] = false;
-                            $data[$key2]['nodes'][$array_key]['text'] = $data[$key2]['nodes'][$array_key]['area_name'];
-                        }
-                        break;
-                    }
-                }
-            }
+            array_push($data,array(
+                'text'=>$key,
+                'selectable'=>true,
+            ));
         }
+                // dd($data);
 
-        // foreach ($data as $key => $value) {
-        //     $data[$key]['selectable'] = $value['type'] == 'office' || $value['type'] == 'program';
-        //     $data[$key]['text'] = $value['area_name'];
+        // dd($data);
+
+        
+        // foreach ($process as $key => $value) {
+        //     foreach ($value as $k => $v) {
+        //         $root = $this->getRootOfProcess($v['parent']);
+        //         foreach ($data as $key2 => $value2) {
+        //             if (!isset($data[$key2]['nodes'])) {
+        //                 $data[$key2]['nodes'] = []; 
+        //             }
+        //             if ($root == $value2['id']) {
+        //                 $v['nodes'] = $this->getDirectoryTree($v);
+        //                 $v['parent']['text'] = $v['parent']['area_name'];
+        //                 if (!in_array($v['area_name'],array_column($data[$key2]['nodes'],'area_name'))) {
+        //                     $data[$key2]['nodes'][] = [
+        //                         'area_name'=>$v['area_name'],
+        //                         'text'=>$v['area_name'],
+        //                         'selectable'=>false,
+        //                         'nodes'=>[
+        //                             $v['parent'],
+        //                         ],
+        //                     ];
+        //                 }
+        //                 else{
+        //                     $array_key = array_search($v['area_name'],$data[$key2]['nodes']);
+        //                     $data[$key2]['nodes'][$array_key]['nodes'][] = $v['parent'];
+        //                     $data[$key2]['nodes'][$array_key]['selectable'] = false;
+        //                     $data[$key2]['nodes'][$array_key]['text'] = $data[$key2]['nodes'][$array_key]['area_name'];
+        //                 }
+        //                 break;
+        //             }
+        //         }
+        //     }
         // }
         return $data;
     }
@@ -169,12 +240,20 @@ class AuditController extends Controller
         foreach($batches as $batch) {
             $batch->audit_report = AuditReport::where('audit_plan_id', $audit_plan->id)
                 ->where('audit_plan_batch_id', $batch->id)
-                ->exists() ?? null;
+                ->value('date') ?? null;
             $batch->cars = Car::whereHas('audit_report', function($q) use($audit_plan, $batch) {
                     $q->where('audit_plan_id', $audit_plan->id)
                     ->where('audit_plan_batch_id', $batch->id);
                 })->exists() ?? null;
+            $batch->lead = User::query()
+            ->select('users.firstname','users.surname')
+            ->join('audit_plan_areas','audit_plan_areas.lead_user_id','users.id')
+            ->join('audit_plan_batches','audit_plan_batches.audit_plan_id','audit_plan_areas.audit_plan_id')
+            ->where('audit_plan_batches.id',$batch->id)
+            ->where('audit_plan_areas.audit_plan_id',$batch->audit_plan_id)
+            ->get();
         }
+        // dd($batch->toArray());
         return view('audits.edit', compact('auditors', 'audit_plan', 'batches'));
     }
 
@@ -216,12 +295,19 @@ class AuditController extends Controller
                     'to_time'=> $request->to_time[$key],
                 ]);
 
-                $areas = explode(',', $request->process[$key]);
+                $areas = Area::query()
+                ->where('area_name',$request->area_names[$key])
+                ->where('type','process')
+                ->pluck('id')
+                ->toArray();
+                
+                // dd($areas);
                 
                 foreach($areas as $process_area) {
                     $area = Area::findOrFail($process_area);
                     $audit_plan_area = AuditPlanArea::firstOrcreate([
                         'area_id' => $area->id,
+                        'lead_user_id'=>$request->lead[$key],
                         'audit_plan_batch_id' => $batch->id,
                         'audit_plan_id' => $audit_plan->id,
                     ]);
@@ -229,7 +315,7 @@ class AuditController extends Controller
                     $auditors = explode(',',$request->auditors[$key]);
                     foreach($auditors as $auditor) {
                         AuditPlanAreaUser::firstOrcreate([
-                                'user_id' => $auditor,
+                            'user_id' => $auditor,
                             'audit_plan_id' => $audit_plan->id,
                             'audit_plan_batch_id' => $batch->id,
                             'audit_plan_area_id' => $audit_plan_area->id
@@ -249,7 +335,12 @@ class AuditController extends Controller
             
         });
 
-        return redirect()->route('lead-auditor.audit.index')->withMessage('Audit plan saved successfully');
+        return redirect()->route('lead-auditor.audit.index')->withMessage('
+            <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+                Audit plan saved successfully!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        ');
     }
 
     public function deleteAuditPlan($id)
@@ -299,6 +390,10 @@ class AuditController extends Controller
         return view('archives.index', $data);
     }
 
+    public function checklist() {
+        return view('audit-reports.checklist');
+    }
+
     public function createAuditReport()
     {
         $audit_plans = AuditPlan::whereHas('users', function($q) {
@@ -323,6 +418,14 @@ class AuditController extends Controller
         $directory = $this->dr->getDirectory($process->area_names(), $dir->id);
         $year = Carbon::parse($request->date)->format('Y');
         $directory = $this->dr->getDirectory($year, $directory->id);
+        $exists = AuditReport::query()
+        ->where('audit_plan_id',$audit_plan->id)
+        ->where('audit_plan_batch_id',$request->process)
+        ->where('directory_id',$directory->id)
+        ->count();
+        if ($exists) {
+            return back()->withMessage('Audit report has already been submitted!');
+        }
 
         $file_id = null;
         if ($request->hasFile('file_attachments')) {

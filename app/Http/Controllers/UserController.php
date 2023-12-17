@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\EmailVerification;
+use App\Models\AuditPlanFile;
+use App\Models\Otp;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\Password;
 use Ramsey\Uuid\Uuid;
 
@@ -41,7 +45,11 @@ class UserController extends Controller
             'users' => $users,
             'user_type' => Str::plural($user_type),
             'notifications' => Auth::user()->notifications,
-            'announcements' => $announcements
+            'announcements' => $announcements,
+            'audit_file' => AuditPlanFile::query()->orderByDesc('audit_plan_files.id')
+            ->select('name','date','audit_plans.id')
+            ->join('audit_plans','audit_plans.id','audit_plan_files.audit_plan_id')
+            ->get()
         ];
 
         return view('user.dashboard', $data);
@@ -70,7 +78,7 @@ class UserController extends Controller
             'middlename'=>['nullable','max:255'],
             'surname'=>['required','max:255'],
             'suffix'=>['nullable','max:255'],
-            'username'=>['required','max:255','unique:users,username'],
+            'username'=>['required','email','max:255','unique:users,username'],
             'password'=>['required','confirmed','max:255', Password::min(8)->mixedCase()->numbers()->symbols()],
             'img'=>['nullable', 'file','mimes:jpg,jpeg,png','max:10000']
         ]);
@@ -82,8 +90,17 @@ class UserController extends Controller
             $validatedData['img'] = $path;
         }
 
-        User::create($validatedData);
+        $user = User::create($validatedData);
+        $code = Uuid::uuid4()->toString();
 
+        Otp::insert([
+            'user_id'=>$user->id,
+            'code'=>$code,
+            'created'=>time(),
+            'expiration'=>time()+300
+        ]);
+
+        Mail::send(new EmailVerification($validatedData['username'],$code));
         return redirect()->route('login-page')->with('success', 'Account has been registered successfully');
     }
 

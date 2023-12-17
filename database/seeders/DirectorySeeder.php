@@ -18,7 +18,8 @@ class DirectorySeeder extends Seeder
         $roles = Role::get()->where('name', '!=', 'Administrator')->pluck('role_name');
         $directories = [
             [
-                'name' => 'Manuals', 
+                'name' => 'Manuals',
+                'sub_directory'=>['Procedures Manual','System Control','Quality Policy'],
                 'automatic_child' => true,
             ],
             [
@@ -96,6 +97,13 @@ class DirectorySeeder extends Seeder
                 }
             }
         }
+
+        Directory::query()
+        ->whereIn('name',['Administration','Academics'])
+        ->where('parent_id',1)
+        ->update([
+            'parent_id'=>2
+        ]);
     }
 
     private function saveAreaDirectory($data, $parent_id) {
