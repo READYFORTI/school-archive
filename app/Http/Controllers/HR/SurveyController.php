@@ -86,7 +86,7 @@ class SurveyController extends Controller
         }
         // $data = [['alpha', 'beta', 'epsilon'], ['alpha', 'beta', 'theta'], ['alpha', 'beta', 'epsilon'], ['alpha', 'beta', 'theta']];
 
-        $associator = new Apriori($support = 0.5, $confidence = 0.5);
+        $associator = new Apriori($support = 0.1, $confidence = 0.1);
         $associator->train($data, []);
         $associates = $associator->predict([$facility]);
 
