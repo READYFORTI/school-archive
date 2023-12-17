@@ -20,6 +20,12 @@ class AuthController extends Controller
             'password' => ['required']
         ]);
 
+        if (User::query()->where('username',$request->username)->whereNotNull('verified') == 0) {
+            return back()->withErrors([
+                'username' => 'You need to verify your account!',
+            ])->onlyInput('username');
+        }
+
         if (User::where('username',$request->username)->whereNotNull('role_id')->count() == 0) {
             return back()->withErrors([
                 'username' => 'Your account is not yet approved',
