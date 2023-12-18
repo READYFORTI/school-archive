@@ -112,6 +112,12 @@ class AreaSeeder extends Seeder
                     'parent_area' => $area->id,
                     'type' => 'process'
                 ]);
+                Area::create([
+                    'area_name' => 'Same '.' Process',
+                    'area_description' => ucwords($area_name. ' Process'),
+                    'parent_area' => $area->id,
+                    'type' => 'process'
+                ]);
             }
         }
 

@@ -28,7 +28,6 @@ class DirectorySeeder extends Seeder
             ],
             [
                 'name' => 'Templates',
-                'sub_directory' => $roles
             ],
             [
                 'name' => 'Audit Reports'

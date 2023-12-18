@@ -27,8 +27,8 @@
                         <div>
                             <div class="mb-3">
                                 <select class="form-select" id="audit_plan_name" name="name" required>
-                                    <option class="1st Half">1st Half</option>
-                                    <option class="2nd Half">2nd Half</option>
+                                    <option class="1st Half">1st Internal Quality Audit</option>
+                                    <option class="2nd Half">2nd Internal Quality Audit</option>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -111,9 +111,16 @@
                         <div class="mb-3 auditors-panel-1">
                             <label for="name" class="form-label">Process</label>
                             <select required id="processes" class="form-control select21" required data-placeholder="Select a process" required>
+                                <option disabled selected>Select a process</option>
                                 @foreach($main as $process)
                                     <option value="{{ $process['text'] }}">{{ $process['text'] }}</option>
                                 @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3 auditors-panel-4">
+                            <label for="name" class="form-label">Institute/Office</label>
+                            <select required id="area_list" class="form-control select24" required data-placeholder="Select an office/intitute" required>
+                                <option disabled selected>Select an office/intitute</option>
                             </select>
                         </div>
                         <div class="mb-3 auditors-panel-2">
@@ -166,9 +173,7 @@
     
     var areas = {!! json_encode($tree_areas) !!};
     var main = {!! json_encode($main) !!};
-
-    console.log(areas);
-    console.log(main);
+    var list = {!! json_encode($list) !!};
 
     var tree = $('.tree').treeview({
         data: main,
@@ -187,10 +192,10 @@
     });
 
     $('.btn-process-modal').on('click', function(){
-        var selectedNodes = tree.treeview('getSelected');
-        selectedNodes.forEach(element => {
-            tree.treeview('unselectNode', [ element.nodeId, { silent: true } ]);
-        });
+        // var selectedNodes = tree.treeview('getSelected');
+        // selectedNodes.forEach(element => {
+        //     tree.treeview('unselectNode', [ element.nodeId, { silent: true } ]);
+        // });
     });
     
 
@@ -207,6 +212,31 @@
     $('.select23').select2({
         'width': '100%',
         dropdownParent: $('.auditors-panel-3')
+    });
+    $('.select24').select2({
+        'width': '100%',
+        dropdownParent: $('.auditors-panel-4')
+    });
+
+    $('.select21').change(function(){
+        let area = $(this).val();
+        $('.rmv').remove();
+        $.ajax({
+            url: "{{route('lead-auditor.audit.create.list')}}",
+            type: 'GET',
+            data: { area: area },
+            success: function(response) {
+                // console.log("AJAX Response:", response);
+                console.log(response.data);
+                for (const key in response.data) {
+                    let newOpton = $('<option>').text(key).addClass('rmv').val(response.data[key]['process_id']);
+                    $('#area_list').append(newOpton);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+            }
+        });
     });
 
     $("#audit_plan_date").flatpickr({
@@ -271,6 +301,8 @@
             }
         }
         auditors_id = arr.join(',');
+        let area_list = $('#area_list').val();
+        let area_name = $('#area_list').find(":selected").text();
 
         if (
             date_selected == '' ||
@@ -278,7 +310,8 @@
             to_time == '' ||
             lead_name == '' ||
             area_names == '' ||
-            auditors_name == ''
+            auditors_name == ''||
+            area_list == ''
         ) {
            alert('Please fill up all the values needed!');
            return;
@@ -286,7 +319,7 @@
 
         $('.table-process tbody').append(`<tr>
                 <td>` + lead_name + `</td>
-                <td>` + area_names + `</td>
+                <td>` + area_name + '-' + area_names +`</td>
                 <td>` + auditors_name + `</td>
                 <td>` + date_selected + `</td>
                 <td>` + from_time + `</td>
@@ -294,7 +327,7 @@
                 <td>
                     <button class="btn btn-danger btn-remove" type="button"><i class="fa fa-times"></i></button>
                     <input type="hidden" name="lead[]" value="` + lead_id + `">
-                    <input type="hidden" name="area_names[]" value="` + area_names + `">
+                    <input type="hidden" name="area_names[]" value="` + area_list + `">
                     <input type="hidden" name="auditors[]" value="` + auditors_id + `">
                     <input type="hidden" name="date_selected[]" value="` + date_selected + `">
                     <input type="hidden" name="from_time[]" value="` + from_time + `">

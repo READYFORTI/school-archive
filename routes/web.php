@@ -276,6 +276,7 @@ Route::middleware(['auth'])->group(function(){
         Route::prefix('audit-plan')->group(function () {
             Route::get('/', [AuditController::class, 'index'])->name('audit.index');
             Route::get('/create', [AuditController::class, 'createAuditPlan'])->name('audit.create');
+            Route::get('/create/get-list', [AuditController::class, 'getListofProcess'])->name('audit.create.list');
             Route::get('/previous', [AuditController::class, 'getPrevious'])->name('audit.previous');
             Route::get('/{id}', [AuditController::class, 'editAuditPlan'])->name('audit.edit');
             Route::post('/', [AuditController::class, 'saveAuditPlan'])->name('audit.save');

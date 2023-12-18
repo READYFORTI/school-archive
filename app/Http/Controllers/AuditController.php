@@ -80,6 +80,41 @@ class AuditController extends Controller
         return view('audits.index', compact('audit_plans', 'auditors'));
     }
 
+    public function getListofProcess(Request $request) {
+        if ($request->has('area')) {
+            $area = Area::query()->get();
+            $data = $area->where('area_name',$request->area);
+            $list = [];
+            foreach ($data as $key => $value) {
+                if (empty($value['parent']['parent']['parent'])) {
+                    $temp = $value['parent'];
+                    if (!isset($list[$temp['area_name']])) {
+                        $temp['process_id'] = $value['id'];
+                        $list[$temp['area_name']] = $temp;
+                    }
+                    else{
+                        $list[$temp['area_name']]['process_id'] = $list[$temp['area_name']]['process_id'].','.$value['id'];
+                    }
+                }
+                else{
+                    $temp = $value['parent']['parent'];
+                    if (!isset($list[$temp['area_name']])) {
+                        $temp['process_id'] = $value['id'];
+                        $list[$temp['area_name']] = $temp;
+                    }
+                    else{
+                        $list[$temp['area_name']]['process_id'] = $list[$temp['area_name']]['process_id'].','.$value['id'];
+                    }
+                }
+            }
+            return response()->json([
+                'data'=>$list
+            ]);
+        }
+        return response()->json([
+            'message'=>'Failed to get data!'
+        ],500);
+    }
     public function addAuditPlanFile(Request $request) {
         if ($request->hasFile('audit_plan_file')) {
             $uuid = Uuid::uuid4()->toString().'.'.$request->file('audit_plan_file')->getClientOriginalExtension();
@@ -136,7 +171,89 @@ class AuditController extends Controller
         $auditors = User::whereHas('role', function($q) { $q->where('role_name', 'Internal Auditor'); })->get();
         $tree_areas = $this->dr->getAreaFamilyTree(null, 'process');
         $main = $this->getProcess();
-        return view('audits.create', compact('tree_areas', 'auditors','main'));
+        $list = $this->getAdminProcess();
+        return view('audits.create', compact('tree_areas', 'auditors','main','list'));
+    }
+
+    public function getAdminProcess() {
+        $area = Area::query()->get();
+        $process = $area->where('type','process');
+        $admin = $area->whereNull('parent_area')->where('area_name','Administration');
+        $process_list = [
+            [
+                'text'=>'Administration',
+                'selectable'=>false,
+                'nodes'=>[]
+            ],
+            [
+                'text'=>'Academics',
+                'selectable'=>false,
+                'nodes'=>[]
+            ]
+        ];
+        $list_of_acads = [];
+        // dd($process->toArray());
+        foreach ($process as $key => $value) {
+            $res = $this->getRootOfProcessName($value);
+            $data = $value->toArray();
+            $data['text'] = $data['area_name'];
+            if ($res == 'Administration') {
+                $data['selectable'] = true;
+                $process_list[0]['nodes'][] = $data;
+            } else {
+                $data['selectable'] = false;
+                if (count($process_list[1]['nodes']) == 0) {
+                    $process_list[1]['nodes'][] = $data;
+                }
+                else{
+                    $check = false;
+                    foreach ($process_list[1]['nodes'] as $key2 => $value2) {
+                        if ($value2['area_name'] == $data['area_name']) {
+                            $check = true;
+                        }
+                    }
+                    if (!$check) {
+                        $process_list[1]['nodes'][] = $data;
+                    }
+                }
+                $list_of_acads[] = $data;
+            }
+        }
+        // dd($list_of_acads);
+        foreach ($process_list[1]['nodes'] as $key => $value) {
+            foreach ($list_of_acads as $key2 => $value2) {
+                if ($value['area_name'] == $value2['area_name']) {
+                    if (!isset($process_list[1]['nodes'][$key]['nodes'])) {
+                        $temp = $value2['parent']['parent'];
+                        $temp['text'] = $temp['area_name'];
+                        $temp['selectable'] = true;
+                        $process_list[1]['nodes'][$key]['nodes'][] = $temp;
+                    }
+                    else{
+                        $check2 = false;
+                        foreach ($process_list[1]['nodes'][$key]['nodes'] as $key3 => $value3) {
+                            if ($value3['area_name'] == $value2['parent']['parent']['area_name']) {
+                                $check2 = true;
+                            }
+                        }
+                        if (!$check2) {
+                            $temp = $value2['parent']['parent'];
+                            $temp['text'] = $temp['area_name'];
+                            $temp['selectable'] = true;
+                            $process_list[1]['nodes'][$key]['nodes'][] = $temp;
+                        }
+                    }
+                }
+            }
+        }
+        return $process_list;
+    }
+
+    public function getRootOfProcessName($area) {
+        if (is_null($area['parent'])) {
+            return $area['area_name'];
+        }
+        return $this->getRootOfProcessName($area['parent']);
     }
 
     public function getProcess() {
@@ -295,11 +412,13 @@ class AuditController extends Controller
                     'to_time'=> $request->to_time[$key],
                 ]);
 
-                $areas = Area::query()
-                ->where('area_name',$request->area_names[$key])
-                ->where('type','process')
-                ->pluck('id')
-                ->toArray();
+                // $areas = Area::query()
+                // ->where('area_name',$request->area_names[$key])
+                // ->where('type','process')
+                // ->pluck('id')
+                // ->toArray();
+
+                $areas = explode(',',$request->area_names[$key]);
                 
                 // dd($areas);
                 
