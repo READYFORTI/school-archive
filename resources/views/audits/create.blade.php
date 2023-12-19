@@ -119,8 +119,8 @@
                         </div>
                         <div class="mb-3 auditors-panel-4">
                             <label for="name" class="form-label">Institute/Office</label>
-                            <select required id="area_list" class="form-control select24" required data-placeholder="Select an office/intitute" required>
-                                <option disabled selected>Select an office/intitute</option>
+                            <select required id="area_list" class="form-control select24" multiple="multiple" required data-placeholder="Select an office/intitute" required>
+                                {{-- <option disabled selected>Select an office/intitute</option> --}}
                             </select>
                         </div>
                         <div class="mb-3 auditors-panel-2">
@@ -302,7 +302,15 @@
         }
         auditors_id = arr.join(',');
         let area_list = $('#area_list').val();
-        let area_name = $('#area_list').find(":selected").text();
+        let area_name = [];
+        let a = $('#area_list').find(":selected");
+        console.log($('#area_list').find(":selected"));
+        for (const key in a) {
+            if (a[key]['innerText']) {
+                area_name.push(a[key]['innerText']);
+            }
+        }
+        area_name = area_name.join(',');
 
         if (
             date_selected == '' ||
