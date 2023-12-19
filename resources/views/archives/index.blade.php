@@ -35,7 +35,7 @@
                 && $page_title == 'Manuals' 
                 && !empty($current_directory->area) && $current_directory->area->type == 'process') 
                 || 
-                (Auth::user()->role->role_name == Roles::STAFF && in_array($current_directory,['System Control','Quality Policy']) )
+                (Auth::user()->role->role_name == Roles::STAFF && isset($current_directory['name']) && in_array($current_directory['name'],['System Control','Quality Policy']) )
             )
                 <button class="btn btn-success" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i> New</button>
                 <ul class="dropdown-menu text-left">

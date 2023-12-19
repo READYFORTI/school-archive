@@ -543,7 +543,7 @@ class AuditController extends Controller
         ->where('directory_id',$directory->id)
         ->count();
         if ($exists) {
-            return back()->withMessage('Audit report has already been submitted!');
+            return back()->with('error','Audit report has already been submitted!');
         }
 
         $file_id = null;
