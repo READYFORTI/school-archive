@@ -1,6 +1,6 @@
 <li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->routeIs('user.dashboard') ? 'active' : '' }}" href="{{ route('user.dashboard') }}"><i class="fas fa-tachometer-alt mx-3 fa-lg"></i><span class="text-nowrap mx-2">Dashboard</span></a></li>
 
-<li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->routeIs('templates') ? 'active' : '' }}" href="{{ route('templates') }}"><i class="fas fa-newspaper mx-3 fa-lg"></i><span class="text-nowrap mx-2">Templates</span></a></li>
+<li class="nav-item"><a class="nav-link text-start py-1 px-0 {{ request()->routeIs('templates') ? 'active' : '' }}" href="{{ route('templates') }}"><i class="fas fa-newspaper mx-3 fa-lg"></i><span class="text-nowrap mx-2">Controlled Forms</span></a></li>
 <li class="nav-item">
     <a class="nav-link text-start py-1 px-0 position-relative {{ request()->is('po/manual*') || request()->is('manual*') ? 'active' : '' }}" href="{{ route('manuals') }}"><i class="fas fa-book mx-3 fa-lg"></i><span class="text-nowrap mx-2">Manuals</span></a>
 </li>

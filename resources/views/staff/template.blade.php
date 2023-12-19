@@ -4,6 +4,6 @@
 @endsection
 @section('page')
     <div class="container">
-        <h1>Templates</h1>
+        <h1>Controlled Forms</h1>
     </div>
 @endsection
