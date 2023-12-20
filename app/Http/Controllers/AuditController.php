@@ -337,11 +337,21 @@ class AuditController extends Controller
     public function getPrevious()
     {
         $audit_plan = AuditPlan::latest()->firstOrFail();
-        $auditors = User::whereHas('role', function($q) { $q->where('role_name', 'Internal Auditor'); })->get();
-        $batches = AuditPlanBatch::where('audit_plan_id', $audit_plan->id)->get();
-        $tree_areas = $this->dr->getAreaFamilyTree(null, 'process');
+        // $auditors = User::whereHas('role', function($q) { $q->where('role_name', 'Internal Auditor'); })->get();
+        // $tree_areas = $this->dr->getAreaFamilyTree(null, 'process');
         $selected_users = $audit_plan->users->pluck('user_id')->toArray();
-        return view('audits.previous', compact('tree_areas', 'auditors', 'audit_plan', 'batches'));
+        // return view('audits.previous', compact('tree_areas', 'auditors', 'audit_plan', 'batches'));
+
+        $auditors = User::whereHas('role', function($q) { $q->where('role_name', 'Internal Auditor'); })->get();
+        $batches = AuditPlanBatch::where('audit_plan_id', $audit_plan->id)->with(['areaLead'=>function($query){
+            $query->select('audit_plan_areas.*','users.firstname','users.surname');
+            $query->join('users','users.id','audit_plan_areas.lead_user_id');
+        }])
+        ->get();
+        $tree_areas = $this->dr->getAreaFamilyTree(null, 'process');
+        $main = $this->getProcess();
+        $list = $this->getAdminProcess();
+        return view('audits.previous', compact('audit_plan','tree_areas', 'auditors','main','list','batches'));
     }
 
     public function editAuditPlan($id)
@@ -399,8 +409,8 @@ class AuditController extends Controller
             $audit_plan->save();
             
             Directory::where('id', $audit_plan->directory_id)->update(['name' => $audit_plan->name]);
-            AuditPlanArea::where('audit_plan_id', $audit_plan->id)->delete();
             AuditPlanAreaUser::where('audit_plan_id', $audit_plan->id)->delete();
+            AuditPlanArea::where('audit_plan_id', $audit_plan->id)->delete();
             AuditPlanBatch::where('audit_plan_id', $audit_plan->id)->delete();
 
             foreach($request->area_names as $key => $area_name) {

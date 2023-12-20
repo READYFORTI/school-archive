@@ -41,6 +41,10 @@ class AuditPlanBatch extends Model
         );
     }
 
+    public function areaLead(){
+        return $this->hasMany(AuditPlanArea::class,'audit_plan_batch_id','id');
+    }
+
     public function area_names()
     {
         $names = [];
